@@ -1,10 +1,30 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.QueryModel = void 0;
-const mongoose_1 = __importDefault(require("mongoose"));
+const mongoose_1 = __importStar(require("mongoose"));
 const QuerySchema = new mongoose_1.default.Schema({
     client: { type: String, required: false },
     serviceType: { type: String, required: false },
@@ -36,5 +56,53 @@ const QuerySchema = new mongoose_1.default.Schema({
     vendorName: { type: String, required: false },
     status: { type: Number, required: false },
     bookingDate: { type: String, required: false },
+    city: { type: String, required: false },
+    hotelName: { type: String, required: false },
+    checkInDate: { type: String, required: false },
+    checkOutDate: { type: String, required: false },
+    noOfNights: { type: Number, required: false },
+    mealPlan: { type: String, required: false },
+    hotelCategory: { type: String, required: false },
+    roomOcuppency: { type: String, required: false },
+    noOfRooms: { type: Number, required: false },
+    noOfGuests: { type: Number, required: false },
+    noOfAdults: { type: Number, required: false },
+    noOfChildren6: { type: Number, required: false },
+    noOfChildren12: { type: Number, required: false },
+    address: { type: String, required: false },
+    contact: { type: String, required: false },
+    email: { type: String, required: false },
+    guestName: { type: String, required: false },
+    bookconfirmNo: { type: String, required: false },
+    price: { type: Number, required: false },
+    timestamp: { type: Date, required: false, default: Date.now() },
+    cabExtraPerHours: { type: Number, required: false },
+    cabExtraKMS: { type: Number, required: false },
+    cabParkingetc: { type: Number, required: false },
+    cabBookingType: { type: String, required: false },
+    cabNumber: { type: String, required: false },
+    cabGuestName: { type: String, required: false },
+    cabMOBNO: { type: String, required: false },
+    cabPickTime: { type: String, required: false },
+    cabPickUpAddress: { type: String, required: false },
+    cabDriverdetails: { type: String, required: false },
+    cabName: { type: String, required: false },
+    cabPerKmsrate: { type: Number, required: false },
+    cabTollPermit: { type: Number, required: false },
+    duplicate: [
+        {
+            type: mongoose_1.Schema.Types.Mixed,
+            required: false
+        }
+    ],
+    via: {
+        FlightNumber: { type: String, required: false },
+        departureFrom: { type: String, required: false },
+        departureTime: { type: String, required: false },
+        arrivalTo: { type: String, required: false },
+        arrivalTime: { type: String, required: false },
+    },
+    confirmed: { type: mongoose_1.Schema.Types.Mixed, required: false },
+    returnFliight: { type: mongoose_1.Schema.Types.Mixed, required: false },
 });
 exports.QueryModel = mongoose_1.default.model('Query', QuerySchema);

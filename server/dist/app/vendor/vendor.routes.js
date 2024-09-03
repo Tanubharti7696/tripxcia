@@ -1,0 +1,12 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.VendorRoutes = void 0;
+const express_1 = require("express");
+const vendor_controller_1 = require("./vendor.controller");
+const app = (0, express_1.Router)();
+exports.VendorRoutes = app;
+app.post('/create', vendor_controller_1.createVendor);
+app.get('/get', vendor_controller_1.getVendors);
+app.delete('/delete/:id', vendor_controller_1.DeleteVendor);
+app.put('/update/:id', vendor_controller_1.UpdateVendor);
+app.get('/get/:id', vendor_controller_1.getVendorById);
