@@ -30,9 +30,6 @@ export const GlobalDataProvider = ({ children }) => {
         try {
           const Query=queries.find((query)=>query._id===id);
             return Query;
-
-
-
         } catch (error) {
             toast.error('Error fetching flight query')
             return navigate('/auth/signin')

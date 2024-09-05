@@ -32,7 +32,6 @@ const q=useSelector(state=>state.query);
 const navigate=useNavigate()
     return (
       <>
-  
         <Modal isOpen={isOpen} onClose={onClose} size={'auto'} >
           <ModalOverlay />
           <ModalContent>

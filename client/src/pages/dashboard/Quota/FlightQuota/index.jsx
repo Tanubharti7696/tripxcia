@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import {
   Card,
@@ -19,12 +19,51 @@ import TableFlightQuery from '@/components/TableFlightQuery';
 import Swal from 'sweetalert2';
 import { Link, useNavigate, useRoutes } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import makeRequest from '@/data/api';
+import { GetFlightQueries } from '@/data/apis';
+import toast from 'react-hot-toast';
 export default function FlightQuota() {
-  const {FlightQuery}=useGlobalData();
+  const [FlightQuery,setFlightQuery] = useState([]);
   const [selectedRow,setSelectedRow]=useState(null);
   const [isOpen,setIsOpen]=useState(false);
 const navigate=useNavigate();
 const selector=useSelector(state=>state);
+const token="Bearer "+localStorage.getItem('token');
+const fetchFlightQuery=async()=>{
+  try {
+      await makeRequest({
+          url:GetFlightQueries,
+          method:'GET',
+          headers:{
+        'Content-Type':'application/json',
+              'Authorization':token
+          }
+
+      })
+      .then((response)=>{
+          console.log(response)
+          setFlightQuery(response.result)
+      }
+      )
+      .catch((error)=>{
+          if (error.response && error.response.status === 403) {
+              toast.error('Token expired');
+          } else {
+              return navigate('/auth/signin')  
+          }
+      })
+
+      
+  } catch (error) {
+      toast.error('Error fetching flight query')
+  }
+
+};
+useEffect(()=>{
+  if(token.length>10){
+    fetchFlightQuery()
+  }
+},[token]);
 
 console.log(selector.query)
   // const [data,setdata]=useState(FlightQuery);

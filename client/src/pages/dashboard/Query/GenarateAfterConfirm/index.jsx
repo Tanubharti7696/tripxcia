@@ -45,11 +45,12 @@ import {
   import TableFlightQuery from "@/components/TableFlightQuery";
   import makeRequest from "@/data/api";
   import { useGlobalData } from "@/hooks/GlobalData";
-  import { ConfirmFlightQuery, ConfirmHotelQuery, FindQuerybYid, getAllQueries, HotelDup, SaveFlight } from "@/data/apis";
+  import { ConfirmCabQuery, ConfirmFlightQuery, ConfirmHotelQuery, FindQuerybYid, getAllQueries, HotelDup, SaveFlight } from "@/data/apis";
 import { hotelForm } from "../GenarateQuery";
 import HotelDuplicate from "@/components/HotelDuplicate";
 import axios from "axios";
 import HotelTable from "@/components/HotelTable";
+import TableCabQuery from "@/components/TableCabQuery";
 
   const steps = [
     { title: 'Step 1', description: 'Contact Info' },
@@ -139,7 +140,13 @@ import HotelTable from "@/components/HotelTable";
       service:'Select',
       passengerNumber:0,
       domesticOrInternational:'',
+      cabBookingType:"",
       oneWayOrRoundway:'',
+      cabExtraKMS:0,
+      cabExtraPerHours:0,
+      cabParkingetc: 0,
+      cabPerKmsrate: 0,
+      cabTollPermit: 0,
       from:'',
       to:'',
       departureDate:'',
@@ -191,8 +198,6 @@ import HotelTable from "@/components/HotelTable";
   invoiceNumber:'',
   vendorName:'',
   confirmedQuery:state.query.query
-
-
 })
 console.log(state)
     const [thirdStepData,setThirdStepData]=useState({
@@ -208,7 +213,23 @@ console.log(state)
 
     })
 
+    const [cabThirdStep,setCabThirdStep] = useState({
+      cabGuestName:"",
+            cabMOBNO:"",
+            cabPickTime:"",
+            cabPickUpAddress:"",
+            cabDriverdetails:"",
+            cabName:"",
+            cabTotalExtraHour:0,
+            cabTotalextraKms:0,
+            cabTotalkms:0,
+            cabGrosstotal:0,
+            confirmedQuery:state.query.query
+    })
+
     const {token,vendors}=useGlobalData()
+
+
 useEffect(()=>{
   makeRequest({
     method:'GET',
@@ -220,7 +241,14 @@ useEffect(()=>{
   .then((response)=>{
   
       console.log('DATA',response.result)
-      setdata({...data,client:response.result.client,service:response.result.serviceType})
+      setdata({...data,client:response.result.client,service:response.result.serviceType,cabBookingType:response?.result?.cabBookingType,cabExtraKMS:response?.result?.cabExtraKMS,
+        cabExtraPerHours:response?.result?.cabExtraPerHours,
+        cabParkingetc: response?.result?.cabParkingetc,
+        cabPerKmsrate: response?.result?.cabPerKmsrate,
+        cabTollPermit: response?.result?.cabTollPermit,
+        OurCost:response?.result?.ourCost,
+        Prf:response?.result?.prf,
+      })
       hotelForm.map((form)=>{
         const element = document.getElementById(form.id);
         if (element && response.result[form.id]) {
@@ -246,6 +274,40 @@ const navigate=useNavigate()
       method:'PUT',
       url:`${ConfirmFlightQuery}${QueryID}`,
       data:thirdStepData
+ ,
+headers:{
+  Authorization:token
+} 
+     })
+      .then((response)=>{
+        if(response){
+          toast.success('Query Genarated Successfully')
+          navigate("/dashboard/confirmed-booking")
+          console.log('RESPONSE',response)
+        }
+        else{
+          toast.error('Failed to genarate query')
+        }
+      })
+      .catch((error)=>{
+        toast.error('Failed to genarate query')
+      }
+      )
+  
+    }
+
+
+
+    const handleCabSubmit=async()=>{
+      const body={
+     
+  
+      }
+      console.log(body)
+     await makeRequest({
+      method:'PUT',
+      url:`${ConfirmCabQuery}${QueryID}`,
+      data:cabThirdStep
  ,
 headers:{
   Authorization:token
@@ -332,7 +394,18 @@ const [hotelTable,sethotelTable]=useState(false)
               OurCost:hotelData.ourCost,
               Prf:hotelData.prf,
               totalCost:Number(hotelData.ourCost)+Number(hotelData.prf),
-
+            }
+          }
+           onClose={()=>{sethotelTable(false)}} />
+          <TableCabQuery duplicate={selectedHotelDuplicate} isOpen={hotelTable} data={
+            {
+              hotelName:hotelData.hotelName,
+              address:hotelData.address,
+              contact:hotelData.contact,
+              email:hotelData.email,
+              OurCost:hotelData.ourCost,
+              Prf:hotelData.prf,
+              totalCost:Number(hotelData.ourCost)+Number(hotelData.prf),
             }
           }
            onClose={()=>{sethotelTable(false)}} />
@@ -346,6 +419,7 @@ const [hotelTable,sethotelTable]=useState(false)
       <Stepper
       onClick={()=>{}}
           activeStep={currentStep}
+
          
         >
      {steps.map((step, index) => (
@@ -457,10 +531,12 @@ const [hotelTable,sethotelTable]=useState(false)
           <FormControl>
             <FormLabel>Cab Type</FormLabel>
             <NormalSelect value={data.cabType} onChange={(e)=>{setdata({...data,cabType:e.target.value})}}>
-              <option selected disabled value={''}>Select</option>
-              <option value={'Local Use'} >Local Use</option>
-              <option value={'Outstation'} >Outstation</option>
-              <option value={'Package'}>Package</option>
+            <option selected disabled value={''}>Select</option>
+            <option value={'8Hrs 80kms'} >8Hrs 80kms</option>
+            <option value={'12Hrs 120kms'} >12Hrs 120kms</option>
+            <option value={'Outstation'} >Outstation</option>
+            <option value={'Package'}>Package</option>
+            <option value={'Pick up & Drop'}>Pick up & Drop</option>
             </NormalSelect>
             </FormControl>
           </Grid>
@@ -927,14 +1003,69 @@ const [hotelTable,sethotelTable]=useState(false)
      
         </>
       )
-      :(
+      :data.service==="Cab"?(
         <>
-        
-        </>
-      )
+          <Box px={'10%'} py={'5%'} gap={5} display={'flex'} flexDir={'column'}>
+          <Grid templateColumns='repeat(3, 1fr)' gap={5}  >
+          <FormControl>
+           <FormLabel>Guest Name</FormLabel>
+           <Input value={cabThirdStep.cabGuestName} onChange={(e)=>{
+            setCabThirdStep({...cabThirdStep,cabGuestName:e.target.value})
+           }} type="text" placeholder="Guest Name" />
+          </FormControl>
 
-      
-      
+          <FormControl>
+           <FormLabel>MOB NO</FormLabel>
+           <Input  value={cabThirdStep.cabMOBNO} onChange={(e)=>{
+            setCabThirdStep({...cabThirdStep,cabMOBNO:e.target.value})
+           }} type="phone" placeholder="MOB NO" />
+          </FormControl>
+          <FormControl>
+
+           <FormLabel>Pick Up Address </FormLabel>
+           <Input  value={cabThirdStep.cabPickUpAddress} onChange={(e)=>{
+            setCabThirdStep({...cabThirdStep,cabPickUpAddress:e.target.value})
+           }} type="text" placeholder="Pick Up Address " />
+          </FormControl>
+
+          <FormControl>
+           <FormLabel>Pick Time</FormLabel>
+           <Input type="time" placeholder="Pick Time" value={cabThirdStep.cabPickTime} onChange={(e)=>{
+            setCabThirdStep({...cabThirdStep,cabPickTime:e.target.value})
+         }} />
+          </FormControl>
+
+          <FormControl>
+           <FormLabel>Driver details</FormLabel>
+           <Input value={cabThirdStep.cabDriverdetails} onChange={(e)=>{
+            setCabThirdStep({...cabThirdStep,cabDriverdetails:e.target.value})
+           }} type="text" placeholder="Driver details" />
+          </FormControl>
+
+           
+          <FormControl>
+            <FormLabel>Cab Name</FormLabel>
+           <NormalSelect  value={cabThirdStep.cabName} onChange={(e)=>{
+            setCabThirdStep({...cabThirdStep,cabName:e.target.value})
+           }}>
+              <option value={''} disabled selected>Cab Name</option>
+              <option value="Economy" >Crysta</option>
+              <option value="Business">Dzire</option>
+            </NormalSelect>
+            </FormControl>
+          </Grid>
+          <Grid templateColumns='repeat(3, 1fr)' gap={5}  >
+            
+          </Grid>
+<FormControl>
+<Button onClick={()=>{
+  setCurrentStep(3)
+}} >Next</Button>
+</FormControl>
+        </Box>
+        </>
+      ):(<>
+      </>)
       :
       
         data.service==='Flight'?
@@ -1021,10 +1152,180 @@ sethotelData({...hotelData,invoiceNumber:e.target.value})         }} type="text"
         </>
       )
       :
-      (
+      data.service==='Cab'?(
         <>
+        {data?.cabBookingType ==="8Hrs 80kms" || data?.cabBookingType ==="12Hrs 120kms"?(
+          <>
+          <Box px={'10%'} py={'5%'} gap={5} display={'flex'} flexDir={'column'}>
+        <Grid templateColumns='repeat(3, 1fr)' gap={5}  >
+        <FormControl>
+         <FormLabel>Our Cast</FormLabel>
+         <Input value={data?.OurCost} disabled type="text" placeholder="" />
+        </FormControl>
+        <FormControl>
+         <FormLabel>PRF Cast</FormLabel>
+         <Input disabled type="number" placeholder="PRF" value={Number(data.Prf)} />
+        </FormControl>
+        <FormControl>
+         <FormLabel>Total</FormLabel>
+         <Input disabled type="number" placeholder="PRF" value={Number(data.Prf)+Number(data?.OurCost)} />
+        </FormControl>
+        </Grid>
+
+
+        <Grid templateColumns='repeat(3, 1fr)' gap={5}  >
+        <FormControl>
+         <FormLabel>Extra Per Hours</FormLabel>
+         <Input value={Number(data.cabExtraPerHours)} type="number" disabled  placeholder="" />
+        </FormControl>
+        <FormControl>
+         <FormLabel>Total Extra Hour</FormLabel>
+         <Input value={cabThirdStep.cabTotalExtraHour} type="number"   placeholder="Total Extra Hour" onChange={(e)=>{
+          setCabThirdStep({...cabThirdStep,cabTotalExtraHour:e.target.value})
+         }}/>
+        </FormControl>
+        <FormControl>
+         <FormLabel>Total</FormLabel>
+         <Input disabled type="number" placeholder="Total" value={Number(data.cabExtraPerHours)*Number(cabThirdStep?.cabTotalExtraHour)} />
+        </FormControl>
+        </Grid>
+
+
+        <Grid templateColumns='repeat(3, 1fr)' gap={5}  >
+        <FormControl>
+         <FormLabel>Extra KMS</FormLabel>
+         <Input value={Number(data.cabExtraKMS)} type="number" disabled  placeholder="Extra KMS" />
+        </FormControl>
+        <FormControl>
+         <FormLabel>Total extra Kms</FormLabel>
+         <Input value={cabThirdStep.cabTotalextraKms} type="number"   placeholder="Total Extra Hour" onChange={(e)=>{
+          setCabThirdStep({...cabThirdStep,cabTotalextraKms:e.target.value})
+         }}/>
+        </FormControl>
+        <FormControl>
+         <FormLabel>Total</FormLabel>
+         <Input disabled type="number" placeholder="Total" value={Number(data.cabExtraKMS)*Number(cabThirdStep?.cabTotalextraKms)} />
+        </FormControl>
+        </Grid>
+
+
+        <Grid templateColumns='repeat(3, 1fr)' gap={5}  >
+        <FormControl>
+         <FormLabel>Parking & etc</FormLabel>
+         <Input value={Number(data.cabParkingetc)} type="number" disabled  placeholder="Extra KMS" />
+        </FormControl>
+        <FormControl>
+         <FormLabel>Gross Total</FormLabel>
+         <Input disabled type="number" placeholder="Total" 
+         value={(Number(data.cabExtraKMS)*Number(cabThirdStep?.cabTotalextraKms))+Number(data.cabParkingetc)+(Number(data.cabExtraPerHours)*Number(cabThirdStep?.cabTotalExtraHour))+Number(data.Prf)+Number(data?.OurCost)} 
+         onChange={(e)=>{
+          setCabThirdStep({...cabThirdStep,cabGrosstotal:e.target.value})
+         }}/>
+        </FormControl>
+        </Grid>
+        <FormControl>
+        <Button onClick={handleCabSubmit}>Submit</Button>
+        </FormControl>
+        </Box>
         </>
-      )
+
+
+        ):data?.cabBookingType ==="Outstation"?(
+
+
+        <>
+        <Box px={'10%'} py={'5%'} gap={5} display={'flex'} flexDir={'column'}>
+
+
+        <Grid templateColumns='repeat(3, 1fr)' gap={5}  >
+        <FormControl>
+         <FormLabel>Per Kms rate</FormLabel>
+         <Input value={Number(data.cabPerKmsrate)} type="number" disabled  placeholder="" />
+        </FormControl>
+        <FormControl>
+         <FormLabel>Total kms</FormLabel>
+         <Input value={cabThirdStep.cabTotalkms} type="number"   placeholder="Total kms" onChange={(e)=>{
+          setCabThirdStep({...cabThirdStep,cabTotalkms:e.target.value})
+         }}/>
+        </FormControl>
+        <FormControl>
+         <FormLabel>Total</FormLabel>
+         <Input disabled type="number" placeholder="Total" value={Number(data.cabPerKmsrate)*Number(cabThirdStep.cabTotalkms)} />
+        </FormControl>
+        </Grid>
+
+
+        <Grid templateColumns='repeat(3, 1fr)' gap={5}  >
+        <FormControl>
+         <FormLabel>Toll & Permit</FormLabel>
+         <Input value={Number(data.cabTollPermit)} type="number" disabled  placeholder="Extra KMS" />
+        </FormControl>
+        <FormControl>
+    
+        </FormControl>
+        <FormControl>
+         <FormLabel>Total</FormLabel>
+         <Input disabled type="number" placeholder="Total" value={Number(data.cabTollPermit)} />
+        </FormControl>
+        </Grid>
+
+
+        <Grid templateColumns='repeat(3, 1fr)' gap={5}  >
+        <FormControl>
+         <FormLabel>Parking & etc</FormLabel>
+         <Input value={Number(data.cabParkingetc)} type="number" disabled  placeholder="Extra KMS" />
+        </FormControl>
+        <FormControl>
+    
+        </FormControl>
+        <FormControl>
+         <FormLabel>Gross Total</FormLabel>
+         <Input disabled type="number" placeholder="Total" 
+         value={(Number(data.cabPerKmsrate)*Number(cabThirdStep.cabTotalkms))+Number(data.cabParkingetc)+Number(data.cabTollPermit)} 
+         onChange={(e)=>{
+          setCabThirdStep({...cabThirdStep,cabGrosstotal:e.target.value})
+         }}/>
+        </FormControl>
+        </Grid>
+        <FormControl>
+        <Button onClick={handleCabSubmit}>Submit</Button>
+        </FormControl>
+        </Box>
+        </>
+        ):data?.cabBookingType ==="Package" || data?.cabBookingType ==="Pick up & Drop"?(
+        <>
+
+<Box px={'10%'} py={'5%'} gap={5} display={'flex'} flexDir={'column'}>
+        <Grid templateColumns='repeat(3, 1fr)' gap={5}  >
+        <FormControl>
+         <FormLabel>Our Cast</FormLabel>
+         <Input value={data?.OurCost} disabled type="text" placeholder="" />
+        </FormControl>
+        <FormControl>
+         <FormLabel>PRF Cast</FormLabel>
+         <Input disabled type="number" placeholder="PRF" value={Number(data.Prf)} />
+        </FormControl>
+        <FormControl>
+         <FormLabel>Gross Total</FormLabel>
+         <Input  type="number" placeholder="PRF" value={Number(data.Prf)+Number(data?.OurCost)} 
+         onChange={(e)=>{
+          setCabThirdStep({...cabThirdStep,cabGrosstotal:e.target.value})
+         }}/>
+        </FormControl>
+        </Grid>
+
+        <FormControl>
+        <Button onClick={handleCabSubmit}>Submit</Button>
+        </FormControl>
+        </Box>
+
+        </>
+        ):
+        (<></>)}
+        </>
+      ):(<>
+      
+      </>)
       
      }
   

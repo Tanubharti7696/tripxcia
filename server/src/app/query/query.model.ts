@@ -64,6 +64,10 @@ const QuerySchema = new mongoose.Schema<QueryInterface>({
     cabName:{type:String,required:false},
     cabPerKmsrate:{type:Number,required:false},
     cabTollPermit:{type:Number,required:false}, 
+    cabTotalExtraHour:{type:Number,required:false},
+    cabTotalextraKms:{type:Number,required:false},
+    cabTotalkms:{type:Number,required:false},
+    cabGrosstotal:{type:Number,required:false},
     duplicate: [
         {
             type: Schema.Types.Mixed,

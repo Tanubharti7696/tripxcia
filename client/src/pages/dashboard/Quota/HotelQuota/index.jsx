@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import {
   Card,
@@ -19,12 +19,55 @@ import TableFlightQuery from '@/components/TableFlightQuery';
 import Swal from 'sweetalert2';
 import { Link, useNavigate, useRoutes } from 'react-router-dom';
 import HotelTable from '@/components/HotelTable';
+import toast from 'react-hot-toast';
+import { getAllQueries } from '@/data/apis';
+import makeRequest from '@/data/api';
 export default function HotelQuota() {
-  const {queries}=useGlobalData();
   const [selectedRow,setSelectedRow]=useState(null);
   const [isOpen,setIsOpen]=useState(false);
+  const [queries,setqueries] = useState([]);
+
 const navigate=useNavigate();
   // const [data,setdata]=useState(FlightQuery);
+  const token="Bearer "+localStorage.getItem('token');
+
+  const fetchAllQueries=async()=>{
+    try {
+        await makeRequest({
+            url:getAllQueries,
+            method:'GET',
+            headers:{
+                'Content-Type':'application/json',
+                'Authorization':token
+            }
+
+        })
+        .then((response)=>{
+            console.log(response)
+            setqueries(response.result)
+        }
+        )
+        .catch((error)=>{
+            if (error.response && error.response.status === 403) {
+                toast.error('Token expired');
+            } else {
+                return navigate('/auth/signin')  
+            }
+        })
+
+        
+    } catch (error) {
+        toast.error('Error fetching flight query')
+        return navigate('/auth/signin')
+
+    }
+        
+    }
+    useEffect(()=>{
+      if(token.length>10){
+        fetchAllQueries();
+      }
+    },[token]);
   return (
     <div className="mt-12 mb-8 flex flex-col gap-12">
       <HotelTable isOpen={isOpen} data={selectedRow} duplicate={selectedRow?.duplicate ?? null} isT={true} onClose={()=>{

@@ -65,6 +65,10 @@ export interface QueryInterface{
     cabName?:string, 
     cabPerKmsrate?:number,
     cabTollPermit?:number,
+    cabTotalExtraHour?:number,
+    cabTotalextraKms?:number,
+    cabTotalkms?:number,
+    cabGrosstotal?:number,
     duplicate?:any[];
     via:{
         FlightNumber:string;

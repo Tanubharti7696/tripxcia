@@ -208,6 +208,10 @@ export const CabQueryConfirmed=async(req:Request,res:Response)=>{
             cabName:req.body.cabName,
             invoiceNumber:req.body.invoiceNumber,
             vendorName:req.body.vendorName,
+            cabTotalExtraHour:req.body.cabTotalExtraHour,
+            cabTotalextraKms:req.body.cabTotalextraKms,
+            cabTotalkms:req.body.cabTotalkms,
+            cabGrosstotal:req.body.cabGrosstotal,
             confirmed:req.body.confirmedQuery,
             status:1,
 

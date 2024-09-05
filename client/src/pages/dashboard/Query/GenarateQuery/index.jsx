@@ -47,10 +47,13 @@ import { airlines } from "@/data/airlines";
 import airports  from "@/data/airports";
 import TableFlightQuery from "@/components/TableFlightQuery";
 import makeRequest from "@/data/api";
-import { SaveFlight, SaveHotel } from "@/data/apis";
+import { SaveCab, SaveFlight, SaveHotel } from "@/data/apis";
 import { useGlobalData } from "@/hooks/GlobalData";
 import { useNavigate, useNavigation } from "react-router-dom/dist";
 import FormDuplicate from "@/components/FormDuplicate";
+import HotelTable from "@/components/HotelTable";
+import TableCabQuery from "@/components/TableCabQuery";
+import HotelDuplicate from "@/components/HotelDuplicate";
 
 const steps = [
   { title: 'Step 1', description: 'Contact Info' },
@@ -59,6 +62,53 @@ const steps = [
   { title: 'Step 4', description: 'Select Rooms' },
 
 ]
+
+export const hotel2NDStepForm=[
+  {
+    label:"Hotel Name",
+    id:'hotelName',
+    type:'text',
+  },
+  {
+    label:'Address',
+    id:'address',
+    type:'text',
+
+
+  },
+  
+  {
+    label:'Contact',
+    id:'contact',
+    type:'text',
+  },
+  {
+    label:'Email',
+    id:'email',
+    type:'email',
+  },
+  
+  {
+    label:'Our Cost',
+    id:'ourCost',
+    type:'number',
+
+  },
+  {
+    label:'PRF',
+    id:'prf',
+    type:'number',
+
+  },
+  {
+    label:'Total Cost',
+    id:'totalCost',
+    type:'number',
+
+  },
+
+]
+
 export const hotelForm=[
   {
     label:'Domestic / International',
@@ -156,12 +206,44 @@ export default function GenarateQuery() {
     count: steps.length,
   })
   const navigate=useNavigate()
-  const [handleTable,settable]=useState(false)
+  const [flightTable,setFlighttable]=useState(false)
+  const [cabTable,setCabTable] = useState(false);
+  const [hotalTable,setHotalTable] = useState(false)
   const [totalFlightTicket,setTotalFlightTicket]=useState(0)
+  const [totalCabBooking,setTotalCabBooking]=useState(0)
+  const [totalHotal,setTotalhotel]=useState(0)
+  const [totalHotelQuota,settotalHotelQuota]=useState(0)
+  const [formsDataHotel, setFormsDataHotel] = useState(Array.from({ length: totalHotelQuota }, () => ({})));
+  const [hotelTable,sethotelTable]=useState(false)
+    const handleFormHotelChange = (index, data) => {
+      setFormsDataHotel((prevData) => {
+        const newData = [...prevData];
+        newData[index] = data;
+        return newData;
+      });
+    };
+    const [selectedHotelDuplicate,setSelectedHotelDuplicate]=useState([])
+
   const [formsData, setFormsData] = useState(Array.from({ length: totalFlightTicket }, () => ({})));
+  const [cabformsData, setcabFormsData] = useState(Array.from({ length: totalCabBooking }, () => ({})));
+  const [hotelformsData, sethotelFormsData] = useState(Array.from({ length: totalHotal }, () => ({})));
 
   const handleFormChange = (index, data) => {
     setFormsData((prevData) => {
+      const newData = [...prevData];
+      newData[index] = data;
+      return newData;
+    });
+  };
+  const handlecabFormChange = (index, data) => {
+    setcabFormsData((prevData) => {
+      const newData = [...prevData];
+      newData[index] = data;
+      return newData;
+    });
+  };
+  const handleHotelFormChange = (index, data) => {
+    sethotelFormsData((prevData) => {
       const newData = [...prevData];
       newData[index] = data;
       return newData;
@@ -201,6 +283,17 @@ export default function GenarateQuery() {
     cabParkingetc:0,
     cabPerKmsrate:0,
     cabTollPermit:0,
+    hotelName:'',
+    address:'',
+    ourCost:0,
+    prf:0,
+    totalCost:0,
+    contact:'',
+    email:'',
+    guestName:'',
+    bookconfirmNo:'',
+    invoiceNumber:'',
+    vendorName:'',
     via:{
       FlightNumber:'',
       departureFrom:'Select Airport',
@@ -286,11 +379,70 @@ const {token}=useGlobalData()
       duplicate:formsData,
       via:data?.via,
       returnFliight:returnData,
-
     }
    await makeRequest({
     method:'POST',
     url:`${SaveFlight}`,
+    data:body,
+    headers:{
+      Authorization:token
+    } 
+
+   })
+    .then((response)=>{
+      if(response){
+        toast.success('Query Genarated Successfully')
+     
+        if(body.serviceType==='Flight'){
+          navigate('/dashboard/quota-flight')
+
+        }
+        if(body.serviceType==='Cab'){
+          navigate('/dashboard/quota-cab')
+
+        }
+        if(body.serviceType==='Hotel'){
+          navigate('/dashboard/quota-hotel')
+
+        }
+
+      }
+      else{
+        toast.error('Failed to genarate query')
+      }
+    })
+    .catch((error)=>{
+      toast.error('Failed to genarate query')
+    }
+    )
+
+  }
+
+
+  const handleCabSubmit=async()=>{
+    const body={
+      client:data?.client,
+      serviceType:data?.service,
+      cabBookingType:data?.cabBookingType,
+      tripStartDateTime:data?.tripStartDateTime,
+      tripEndDateTime:data?.tripEndDateTime,
+      cabType:data?.cabType,
+      totalPassenger:data?.totalPassenger,
+      ourCost:data?.OurCost,
+      prf:data?.Prf,
+      city:data?.city,
+      bookingDate:data?.bookingDate,
+      cabExtraPerHours:data?.cabExtraPerHours,
+      cabExtraKMS:data?.cabExtraKMS,
+      cabParkingetc:data?.cabParkingetc,
+      cabPerKmsrate:data?.cabPerKmsrate,
+      cabTollPermit:data?.cabTollPermit,
+      duplicate:formsData,
+      via:data?.via,
+    }
+   await makeRequest({
+    method:'POST',
+    url:`${SaveCab}`,
     data:body,
     headers:{
       Authorization:token
@@ -424,6 +576,14 @@ const firstStepHandle=()=>{
   }
 }
 if(data.service==='Hotel'){
+  if(data.client==='Select'){
+    toast.error('Please select client')
+    return
+  }
+  else if(data.service==='Select'){
+    toast.error('Please select service')
+    return
+  }
   Swal.fire({
     title: 'Are you sure?',
     text: "You want to genarate query for this service",
@@ -434,12 +594,12 @@ if(data.service==='Hotel'){
     confirmButtonText: 'Yes, genarate it!'
   }).then(async(result) => {
     if (result.isConfirmed) {
-     await handleHotelQuery()
+      setCurrentStep(currentStep+1)
 
 
     }
     else{
-
+      toast.error('Query not genarated')
     }
 })
 }
@@ -461,7 +621,9 @@ const memoizedOptions = useMemo(() => airports, [airports]);
 
   return (
     <div className="mt-12 mb-8 flex flex-col gap-12 min-w-full">
-      <TableFlightQuery isOpen={handleTable} handleSave={handleFlightSubmit} duplicate={formsData.length>0 ? formsData : [returnData]} onClose={()=>{settable(false)}}  data={data}/>
+      <TableFlightQuery isOpen={flightTable} handleSave={handleFlightSubmit} duplicate={formsData.length>0 ? formsData : [returnData]} onClose={()=>{setHotalTable(false)}}  data={data}/>
+      <HotelTable isOpen={hotalTable}  handleSave={handleHotelQuery} duplicate={hotelformsData.length>0 ? formsData : [returnData]} onClose={()=>{setHotalTable(false)}}  data={data}/>
+      <TableCabQuery isOpen={cabTable} handleSave={handleCabSubmit} duplicate={cabformsData.length>0 ? formsData : [returnData]} onClose={()=>{setCabTable(false)}}  data={data}/>
       <Card>
         <CardHeader variant="gradient" color="gray" className="mb-8 p-6">
          Genarate Query
@@ -690,12 +852,11 @@ const memoizedOptions = useMemo(() => airports, [airports]);
     )
     :data.service==='Hotel'?
     (
+
+
       <>
       <Box p={4}>
-       <form onSubmit={(e)=>{
-        e.preventDefault();
-        handleHotelQuery()
-       }}>
+       <form>
        <Grid templateColumns='repeat(3, 1fr)' gap={5}  >
           {hotelForm.map((item)=>(
             <FormControl>
@@ -1332,6 +1493,66 @@ const memoizedOptions = useMemo(() => airports, [airports]);
         )
         }
         </>
+      ) :data?.service==='Hotel'?(
+        <>
+        <>
+             <Box px={'10%'} py={'5%'} gap={5} display={'flex'} flexDir={'column'}>
+          <form >
+          <Grid templateColumns='repeat(4, 1fr)' gap={5}  >
+          
+            {
+              hotel2NDStepForm.map((form,index)=>(
+                <>
+                <FormControl>
+                <FormLabel>{form.label}</FormLabel>
+              {
+                form.type==='select'?
+                (
+                  <NormalSelect >
+                    <option value={data[form.id]} onChange={(e)=>{
+                      setdata({...data,[form.id]:e.target.value})
+                    }} disabled selected>Select</option>
+                    {
+                      form.options.map((option)=>(
+                        <option value={option.value}>{option.label}</option>
+                      ))
+                    }
+                  </NormalSelect>
+                )
+                :(
+                  <Input type={form.type} value={form.id==='totalCost'? Number(data.ourCost)+Number(data.prf) : data[form.id]} onChange={(e)=>{
+                
+                    setdata({...data,[form.id]:e.target.value})
+                    
+  
+                  }} id={form.id} placeholder={form.placeholder} />
+                )
+              }
+              </FormControl>
+                </>
+            ))}
+          
+            </Grid>
+      {Array.from({length:totalHotelQuota}).map((_,index)=>(
+        <>
+        <HotelDuplicate remove={()=>{settotalHotelQuota(totalHotelQuota-1)}} onChange={handleFormChange} index={index} />
+        </>
+      ))}
+
+            <FormControl
+            py={10}
+            >
+              <Button onClick={async()=>{
+                settotalHotelQuota(totalHotelQuota+1)
+         
+            
+
+              }}>Duplicate</Button>
+            </FormControl>
+          </form>
+        </Box>
+          </>
+        </>
       )
       :
       data.service==='Cab'?
@@ -1339,6 +1560,127 @@ const memoizedOptions = useMemo(() => airports, [airports]);
         <>
           {data?.cabBookingType ==="8Hrs 80kms"?
           (<>
+          <form>
+          <Grid templateColumns='repeat(3, 1fr)' gap={5}  >
+            <FormControl>
+              <FormLabel>Our Cost</FormLabel>
+              <Input type="number" placeholder="Our Cost" value={data.OurCost} onChange={(e)=>{
+                 setdata({...data,OurCost:e.target.value})
+              }} />
+             </FormControl>
+             <FormControl>
+              <FormLabel>PRF</FormLabel>
+              <Input type="number" placeholder="PRF" value={data.Prf} onChange={(e)=>{
+                 setdata({...data,Prf:e.target.value})
+              }} />
+             </FormControl>
+             <FormControl>
+              <FormLabel>Extra Per Hours</FormLabel>
+              <Input type="number" placeholder="Extra Per Hours" value={data.cabExtraPerHours} onChange={(e)=>{
+                 setdata({...data,cabExtraPerHours:e.target.value})
+              }} />
+             </FormControl>
+             </Grid>
+          <Grid templateColumns='repeat(3, 1fr)' gap={5}  >
+             <FormControl>
+              <FormLabel>Extra KMS</FormLabel>
+              <Input type="number" placeholder="Extra KMS" value={data.cabExtraKMS} onChange={(e)=>{
+                 setdata({...data,cabExtraKMS:e.target.value})
+              }} />
+             </FormControl>
+             <FormControl>
+              <FormLabel>Parking & etc</FormLabel>
+              <Input type="number" placeholder="Parking & etc" value={data.cabParkingetc} onChange={(e)=>{
+                 setdata({...data,cabParkingetc:e.target.value})
+              }}/>
+             </FormControl>
+             <FormControl>
+              <FormLabel>Total Cost</FormLabel>
+              <Input disabled type="number" placeholder="PRF" value={Number(data.OurCost)+Number(data.Prf)+Number(data?.cabExtraKMS)+Number(data?.cabParkingetc)} />
+             </FormControl>
+             </Grid>
+             </form>
+             </>):
+          data?.cabBookingType ==="12Hrs 120kms"?
+          (<form>
+            <Grid templateColumns='repeat(3, 1fr)' gap={5}  >
+              <FormControl>
+                <FormLabel>Our Cost</FormLabel>
+                <Input type="number" placeholder="Our Cost" value={data.OurCost} onChange={(e)=>{
+                   setdata({...data,OurCost:e.target.value})
+                }} />
+               </FormControl>
+               <FormControl>
+                <FormLabel>PRF</FormLabel>
+                <Input type="number" placeholder="PRF" value={data.Prf} onChange={(e)=>{
+                   setdata({...data,Prf:e.target.value})
+                }} />
+               </FormControl>
+               <FormControl>
+                <FormLabel>Extra Per Hours</FormLabel>
+                <Input type="number" placeholder="Extra Per Hours" value={data.cabExtraPerHours} onChange={(e)=>{
+                   setdata({...data,cabExtraPerHours:e.target.value})
+                }} />
+               </FormControl>
+               </Grid>
+            <Grid templateColumns='repeat(3, 1fr)' gap={5}  >
+              
+               <FormControl>
+                <FormLabel>Extra KMS</FormLabel>
+                <Input type="number" placeholder="Extra KMS" value={data.cabExtraKMS} onChange={(e)=>{
+                   setdata({...data,cabExtraKMS:e.target.value})
+                }} />
+               </FormControl>
+               <FormControl>
+                <FormLabel>Parking & etc</FormLabel>
+                <Input type="number" placeholder="Parking & etc" value={data.cabParkingetc} onChange={(e)=>{
+                   setdata({...data,cabParkingetc:e.target.value})
+                }}/>
+               </FormControl>
+               <FormControl>
+              <FormLabel>Total Cost</FormLabel>
+              <Input disabled type="number" placeholder="PRF" value={Number(data.OurCost)+Number(data.Prf)+Number(data?.cabExtraKMS)+Number(data?.cabParkingetc)} />
+             </FormControl>
+               </Grid>
+               </form>):
+          data?.cabBookingType ==="Outstation"?
+          (<form>
+            <Grid templateColumns='repeat(3, 1fr)' gap={5}  >
+              <FormControl>
+                <FormLabel>Per kms Rate</FormLabel>
+                <Input type="number" placeholder="Our Cost" value={data.cabPerKmsrate} onChange={(e)=>{
+                   setdata({...data,cabPerKmsrate:e.target.value})
+                }} />
+               </FormControl>
+               <FormControl>
+                <FormLabel>PRF</FormLabel>
+                <Input type="number" placeholder="PRF" value={data.Prf} onChange={(e)=>{
+                   setdata({...data,Prf:e.target.value})
+                }} />
+               </FormControl>
+               <FormControl>
+                <FormLabel>Toll & Permit</FormLabel>
+                <Input type="number" placeholder="Extra Per Hours" value={data.cabTollPermit} onChange={(e)=>{
+                   setdata({...data,cabTollPermit:e.target.value})
+                }} />
+               </FormControl>
+               </Grid>
+            <Grid templateColumns='repeat(3, 1fr)' gap={5}  >
+              
+               <FormControl>
+                <FormLabel>Parking & etc</FormLabel>
+                <Input type="number" placeholder="Parking & etc" value={data.cabParkingetc} onChange={(e)=>{
+                   setdata({...data,cabParkingetc:e.target.value})
+                }}/>
+               </FormControl>
+               <FormControl>
+                <FormLabel>Total Cost</FormLabel>
+                <Input disabled type="number" placeholder="PRF" value={Number(data.cabTollPermit)+Number(data.Prf)+Number(data.cabParkingetc)} />
+               </FormControl>
+               </Grid>
+               </form>):
+          data?.cabBookingType ==="Package"?
+          <form>
           <Grid templateColumns='repeat(3, 1fr)' gap={5}  >
             <FormControl>
               <FormLabel>Our Cost</FormLabel>
@@ -1357,35 +1699,28 @@ const memoizedOptions = useMemo(() => airports, [airports]);
               <Input disabled type="number" placeholder="PRF" value={Number(data.OurCost)+Number(data.Prf)} />
              </FormControl>
              </Grid>
-          <Grid templateColumns='repeat(3, 1fr)' gap={5}  >
-            <FormControl>
-              <FormLabel>Extra Per Hours</FormLabel>
-              <Input type="number" placeholder="Extra Per Hours" value={data.cabExtraPerHours} onChange={(e)=>{
-                 setdata({...data,cabExtraPerHours:e.target.value})
-              }} />
-             </FormControl>
-             <FormControl>
-              <FormLabel>Extra KMS</FormLabel>
-              <Input type="number" placeholder="Extra KMS" value={data.cabExtraKMS} onChange={(e)=>{
-                 setdata({...data,cabExtraKMS:e.target.value})
-              }} />
-             </FormControl>
-             <FormControl>
-              <FormLabel>Parking & etc</FormLabel>
-              <Input type="number" placeholder="Parking & etc" value={data.cabParkingetc} onChange={(e)=>{
-                 setdata({...data,cabParkingetc:e.target.value})
-              }}/>
-             </FormControl>
-             </Grid>
-             </>):
-          data?.cabBookingType ==="12Hrs 120kms"?
-          (<>12Hrs 120kms</>):
-          data?.cabBookingType ==="Outstation"?
-          (<>Outstation</>):
-          data?.cabBookingType ==="Package"?
-          (<>Package</>):
+             </form>:
           data?.cabBookingType ==="Pick up & Drop"?
-          (<>Pick up & Drop</>):
+          (<form>
+            <Grid templateColumns='repeat(3, 1fr)' gap={5}  >
+              <FormControl>
+                <FormLabel>Our Cost</FormLabel>
+                <Input type="number" placeholder="Our Cost" value={data.OurCost} onChange={(e)=>{
+                   setdata({...data,OurCost:e.target.value})
+                }} />
+               </FormControl>
+               <FormControl>
+                <FormLabel>PRF</FormLabel>
+                <Input type="number" placeholder="PRF" value={data.Prf} onChange={(e)=>{
+                   setdata({...data,Prf:e.target.value})
+                }} />
+               </FormControl>
+               <FormControl>
+                <FormLabel>Total Cost</FormLabel>
+                <Input disabled type="number" placeholder="PRF" value={Number(data.OurCost)+Number(data.Prf)} />
+               </FormControl>
+               </Grid>
+               </form>):
           null}
         </>
       )
@@ -1409,7 +1744,13 @@ const memoizedOptions = useMemo(() => airports, [airports]);
             confirmButtonText: 'Yes, genarate it!'
           }).then((result) => {
             if (result.isConfirmed) {
-              settable(true)
+              if(data?.service === "Flight"){
+                setFlighttable(true)
+              }else if(data?.service === "Cab"){
+                setCabTable(true);
+              }else if(data?.service === "Hotel"){
+                setHotalTable(true)
+              }
               }
             else{
               toast.error('Query not genarated')
