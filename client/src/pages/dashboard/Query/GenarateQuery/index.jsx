@@ -294,6 +294,17 @@ export default function GenarateQuery() {
     bookconfirmNo:'',
     invoiceNumber:'',
     vendorName:'',
+               checkInDate:"",
+               checkOutDate:"",
+               noOfNights:"",
+               mealPlan:"",
+               hotelCategory:"",
+               roomOcuppency:"",
+               noOfRooms:"",
+                noOfGuests:"",
+                noOfAdults:"",
+                noOfChildren6:"",
+                noOfChildren12:"",
     via:{
       FlightNumber:'',
       departureFrom:'Select Airport',
@@ -418,6 +429,64 @@ const {token}=useGlobalData()
 
   }
 
+  // handle hotel submit
+  const handleHotelSubmit=async()=>{
+    const body={
+      client:data?.client,
+      serviceType:data?.service,
+            city:data?.city,
+               DomesticOrInternational:data?.domesticOrInternational,
+               hotelName:data?.hotelName,
+               checkInDate:data?.checkInDate,
+               checkOutDate:data?.checkOutDate,
+               noOfNights:data?.noOfNights,
+               mealPlan:data?.mealPlan,
+               hotelCategory:data?.hotelCategory,
+               roomOcuppency:data?.roomOcuppency,
+               noOfRooms:data?.noOfRooms,
+                noOfGuests:data?.noOfGuests,
+                noOfAdults:data?.noOfAdults,
+                noOfChildren6:data?.noOfChildren6,
+                noOfChildren12:data?.noOfChildren12,
+    }
+   await makeRequest({
+    method:'POST',
+    url:`${SaveHotel}`,
+    data:body,
+    headers:{
+      Authorization:token
+    } 
+
+   })
+    .then((response)=>{
+      if(response){
+        toast.success('Query Genarated Successfully')
+     
+        if(body.serviceType==='Flight'){
+          navigate('/dashboard/quota-flight')
+
+        }
+        if(body.serviceType==='Cab'){
+          navigate('/dashboard/quota-cab')
+
+        }
+        if(body.serviceType==='Hotel'){
+          navigate('/dashboard/quota-hotel')
+
+        }
+
+      }
+      else{
+        toast.error('Failed to genarate query')
+      }
+    })
+    .catch((error)=>{
+      toast.error('Failed to genarate query')
+    }
+    )
+
+  }
+
 
   const handleCabSubmit=async()=>{
     const body={
@@ -477,41 +546,6 @@ const {token}=useGlobalData()
     )
 
   }
-  const handleHotelQuery=async()=>{
-    const body=hotelForm.map((item)=>({
-      [item.id]:document.getElementById(item.id).value
-    }));
-    const mainBody=body.reduce((acc,curr)=>({...acc,...curr}),{})
-
- 
-    
-
-    console.log(body)
-   await makeRequest({
-    method:'POST',
-    url:`${SaveHotel}`,
-    data:{...mainBody,client:data.client,serviceType:data.service},
-    headers:{
-      Authorization:token
-    } 
-
-   })
-    .then((response)=>{
-      if(response){
-        navigate('/dashboard/query-confirm/'+response.result._id)
-        toast.success('Query Genarated Successfully')
-        
-      }
-      else{
-        toast.error('Failed to genarate query')
-      }
-    })
-    .catch((error)=>{
-      toast.error('Failed to genarate query')
-    }
-    )
-
-  }
   console.log('query',data)
 
 const firstStepHandle=()=>{
@@ -553,6 +587,10 @@ const firstStepHandle=()=>{
   }
   else if(data.service==='Select'){
     toast.error('Please select service')
+    return
+  }
+  else if(data.serviceType==='Select'){
+    toast.error('Please select Service Type')
     return
   }
   else{
@@ -622,7 +660,7 @@ const memoizedOptions = useMemo(() => airports, [airports]);
   return (
     <div className="mt-12 mb-8 flex flex-col gap-12 min-w-full">
       <TableFlightQuery isOpen={flightTable} handleSave={handleFlightSubmit} duplicate={formsData.length>0 ? formsData : [returnData]} onClose={()=>{setHotalTable(false)}}  data={data}/>
-      <HotelTable isOpen={hotalTable}  handleSave={handleHotelQuery} duplicate={hotelformsData.length>0 ? formsData : [returnData]} onClose={()=>{setHotalTable(false)}}  data={data}/>
+      <HotelTable isOpen={hotalTable}  handleSave={handleHotelSubmit} duplicate={hotelformsData.length>0 ? formsData : [returnData]} onClose={()=>{setHotalTable(false)}}  data={data}/>
       <TableCabQuery isOpen={cabTable} handleSave={handleCabSubmit} duplicate={cabformsData.length>0 ? formsData : [returnData]} onClose={()=>{setCabTable(false)}}  data={data}/>
       <Card>
         <CardHeader variant="gradient" color="gray" className="mb-8 p-6">
@@ -867,7 +905,9 @@ const memoizedOptions = useMemo(() => airports, [airports]);
                   <NormalSelect  
                   id={item.id}
                   >
-                    <option selected disabled value={''}>Select</option>
+                    <option selected disabled value={''} onChange={(e)=>{
+                      setdata({...data,[item.id]:e.target.value})
+                    }}>Select</option>
                     {item.options.map((option)=>(
                       <option value={option}>{option}</option>
                     ))}
@@ -878,6 +918,7 @@ const memoizedOptions = useMemo(() => airports, [airports]);
                   <Input type={item.type} placeholder={'Enter '+item.label} id={item.id} onChange={(e)=>{
                   
                      const checkInDate=document.getElementById('checkInDate').value;
+                     setdata({...data,[item.id]:e.target.value})
 
                       if(item.id=='checkOutDate'){
                        const a= document.getElementById('noOfNights');
@@ -1544,15 +1585,14 @@ const memoizedOptions = useMemo(() => airports, [airports]);
             >
               <Button onClick={async()=>{
                 settotalHotelQuota(totalHotelQuota+1)
-         
-            
-
               }}>Duplicate</Button>
             </FormControl>
           </form>
         </Box>
           </>
         </>
+
+
       )
       :
       data.service==='Cab'?

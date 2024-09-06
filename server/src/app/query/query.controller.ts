@@ -267,7 +267,7 @@ export const HotelQueryConfirmed=async(req:Request,res:Response)=>{
 
 export const getFlightQueries=async(req:Request,res:Response)=>{
     try {
-        const queries=await QueryModel.find({serviceType:"Flight"});
+        const queries=await QueryModel.find({serviceType:"Flight"}).sort({ timestamp: -1 });
         return res.status(200).json({message:"Queries fetched successfully",result:queries});
     } catch (error) {
         return res.status(500).json({message:error});
@@ -276,7 +276,7 @@ export const getFlightQueries=async(req:Request,res:Response)=>{
 
 export const getCabQueries=async(req:Request,res:Response)=>{
     try {
-        const queries=await QueryModel.find({serviceType:"Cab"});
+        const queries=await QueryModel.find({serviceType:"Cab"}).sort({ timestamp: -1 });
         return res.status(200).json({message:"Queries fetched successfully",result:queries});
     } catch (error) {
         return res.status(500).json({message:error});
@@ -286,7 +286,7 @@ export const getCabQueries=async(req:Request,res:Response)=>{
 
 export const getHotelQueries=async(req:Request,res:Response)=>{
     try {
-        const queries=await QueryModel.find({serviceType:"Hotel"});
+        const queries=await QueryModel.find({serviceType:"Hotel"}).sort({ timestamp: -1 });
         return res.status(200).json({message:"Queries fetched successfully",result:queries});
     } catch (error) {
         return res.status(500).json({message:error});
@@ -296,7 +296,7 @@ export const getHotelQueries=async(req:Request,res:Response)=>{
 
 export const getAllQueries=async(req:Request,res:Response)=>{
     try {
-        const queries=await QueryModel.find();
+        const queries=await QueryModel.find().sort({ timestamp: -1 });
         return res.status(200).json({message:"Queries fetched successfully",result:queries});
     } catch (error) {
         return res.status(500).json({message:error});

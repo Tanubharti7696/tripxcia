@@ -52,7 +52,7 @@ export default function Ticket() {
       },[data])
     
   return (
-    <div className='bg-gray-500 h-[160vh] px-[30%]  w-full flex justify-center items-center flex-col'>
+    <div className='bg-gray-500 px-[30%]  w-full flex justify-center items-center flex-col'>
        {
         data &&  <Wrap ref={targetRef} sx={{
             height:'auto',
@@ -184,12 +184,21 @@ export default function Ticket() {
 
         <Divider />
 
-        <Box textAlign="left">
-          <Text fontSize="sm" fontWeight="bold">
+        <Flex justifyContent="space-between">
+          <Box>
+            <Text fontSize="sm" fontWeight="bold">
             Passenger Name
-          </Text>
-          <Text>{data.passengerName}</Text>
-        </Box>
+            </Text>
+            <Text>{data?.passengerName}</Text>
+          </Box>
+          <Box textAlign="right">
+            <Text fontSize="sm" fontWeight="bold">
+            Seat No.
+            </Text>
+            <Text>{data.seatNumber}</Text>
+          </Box>
+        </Flex>
+
 
         <Flex justifyContent="space-between">
           <Box>

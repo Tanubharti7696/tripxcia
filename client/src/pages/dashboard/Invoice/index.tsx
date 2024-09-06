@@ -123,19 +123,21 @@ body {
 </tr>
 <tr>
     <td>
-        <p>
-            All Tickets (Including Application Flight Taxes
-            Collected on behalf of <br></br> Airline and other Ancillary Charges)
-        </p> <br></br>
+       
     
    
        {
         data.serviceType==='Flight' ? (
             <>
+             <p>
+            All Tickets (Including Application Flight Taxes
+            Collected on behalf of <br></br> Airline and other Ancillary Charges)
+        </p> <br></br>
            {
             data.OneWayOrRoundTrip=='Round Way' ?
             (
                 <>
+                
                   <h3>Onward</h3>
              <p> Flight No - {data?.flightNumber}</p>
             <p>From - {data?.departureFrom}</p>
@@ -177,7 +179,15 @@ body {
            
            </>
         )
-        :
+        :data?.serviceType ==='Cab'?(
+            <>
+            <p>Vehical Type - {data?.checkInDate}</p>
+                <p>Booking Date - {data?.bookingDate }</p>
+                <p>Location - {data?.city}</p>
+                <br /><br />
+                <p>(Including Driver Allowance/Toll /Parking)</p>
+            </>
+        ):
         (
             <></>
         )
@@ -203,7 +213,7 @@ body {
         <br></br>
         <br></br>
         <br></br>
-                                                            <p style={{ textAlign: 'right', marginTop: `${data?.serviceType==='Hotel'?'0px':'70px'}` }}>
+                                                            <p style={{ textAlign: 'right', marginTop: `${data?.serviceType==='Hotel'?'-70px':data?.serviceType==='Cab'?'-10px':'70px'}` }}>
                                                                 {Number(data?.prf).toFixed(2)}
                 
                 </p>

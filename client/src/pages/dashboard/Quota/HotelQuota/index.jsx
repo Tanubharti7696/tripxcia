@@ -68,6 +68,8 @@ const navigate=useNavigate();
         fetchAllQueries();
       }
     },[token]);
+    console.log('flight query',selectedRow)
+    console.log(queries)
   return (
     <div className="mt-12 mb-8 flex flex-col gap-12">
       <HotelTable isOpen={isOpen} data={selectedRow} duplicate={selectedRow?.duplicate ?? null} isT={true} onClose={()=>{
@@ -200,17 +202,18 @@ const navigate=useNavigate();
                   (
                   <Eye 
                   style={{cursor:'pointer'}}  onClick={()=>{
-                    const data={
+                    setSelectedRow({
                       hotelName:row.hotelName,
-                      address:row.address,
+                      client:row.client,
+                      DomesticOrInternational:row.DomesticOrInternational,
+                      city:row.city,
                       contact:row.contact,
                       email:row.email,
                       OurCost:row.ourCost,
                       Prf:row.prf,
                       duplicate:row.duplicate,
                       _id:row._id
-                    }
-                    setSelectedRow(data)
+                    })
                     setIsOpen(true)
                   }} 
                   />

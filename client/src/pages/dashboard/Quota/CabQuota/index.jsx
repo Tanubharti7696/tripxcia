@@ -9,7 +9,6 @@ import React, { useEffect, useState } from 'react'
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
-import Ticket from '../../Ticket';
 
 export default function CabQuota() {
   const [isOpen,setIsOpen]=useState(false);
@@ -50,6 +49,9 @@ export default function CabQuota() {
       fetchCabQuery();
     }
   },[token]);
+
+  console.log(' cab',queries);
+  console.log('selected row',selectedRow)
 
   return (
     <div className="mt-12 mb-8 flex flex-col gap-12">
@@ -164,20 +166,16 @@ export default function CabQuota() {
                    {row.status===1 ? 
                   (
                     <Stack direction="row" spacing={4}>
-                      {/* <Ticket onClick={()=>{
-                        navigate(`/ticket/${row._id}`)
-                      }}  style={{cursor:'pointer'}} />
                  
                       <Receipt  style={{cursor:'pointer'}}  onClick={()=>{
                         navigate(`/invoice/${row._id}`)
-                      }} /> */}
+                      }} />
                    
                     </Stack>
                   ) 
                   :
                   (
                     <Eye style={{cursor:'pointer'}} onClick={()=>{
-                      console.log(row.returnFliight)
                       setSelectedRow({
                         client:row.client,
                           serviceType:row.serviceType,
@@ -186,16 +184,16 @@ export default function CabQuota() {
                           tripEndDateTime:row.tripEndDateTime,
                           cabType:row.cabType,
                           totalPassenger:row.totalPassenger,
-                          ourCost:row.ourCost,
-                          prf:row.prf,
+                          OurCost:row.ourCost,
+                          Prf:row.prf,
                           city:row.city,
                           cabExtraPerHours:row.cabExtraPerHours,
                           cabExtraKMS:row.cabExtraKMS,
                           cabParkingetc:row.cabParkingetc,
                           cabPerKmsrate:row.cabPerKmsrate,
                           cabTollPermit:row.cabTollPermit,
-                          duplicate:row.duplicate,
                           status:row.status,
+                          _id:row._id,
                         
                       });
                       setIsOpen(true);

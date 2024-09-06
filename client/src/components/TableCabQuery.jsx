@@ -32,8 +32,8 @@ navigate('/dashboard/quota-cab')
                      <Tbody>
                      <Tr bgColor={'#db2778'} textColor={'white'} gap={0}>
                           <Td borderRightColor={'white'} borderRightWidth={0.5}>Cab Booking Type</Td>
-                          <Td borderRightColor={'white'} borderRightWidth={0.5}>Trip start Date</Td>
-                          <Td borderRightColor={'white'} borderRightWidth={0.5}>Trip end Date</Td>
+                          <Td borderRightColor={'white'} borderRightWidth={0.5}>Client Name</Td>
+                          <Td borderRightColor={'white'} borderRightWidth={0.5}>City</Td>
                           <Td borderRightColor={'white'} borderRightWidth={0.5}>Our Cast</Td>
                
                           <Td borderRightColor={'white'} borderRightWidth={0.5}>Total Cost</Td>
@@ -42,8 +42,8 @@ navigate('/dashboard/quota-cab')
                       </Tr>
                       <Tr>
                           <Td>{data?.cabBookingType}</Td>
-                          <Td>{data?.tripStartDateTime}</Td>
-                          <Td>{data?.tripEndDateTime}</Td>
+                          <Td>{data?.client}</Td>
+                          <Td>{data?.city}</Td>
                           <Td>{data?.OurCost}</Td>
                           
                           <Td>₹ {(Number(data?.OurCost)+Number(data?.Prf)).toFixed(2)}</Td>
@@ -58,7 +58,7 @@ navigate('/dashboard/quota-cab')
                           }}
                           >Confirm</Button></Td>}
                       </Tr>
-                      {duplicate && <>
+                      {/* {duplicate && <>
                         {duplicate.length>0 && duplicate.map((item,index)=>(
                       <Tr key={index} gap={0}>
                           <Td borderRightColor={'white'} borderRightWidth={0.5}>{item.cabBookingType}</Td>
@@ -77,7 +77,7 @@ navigate('/dashboard/quota-cab')
                           }} colorScheme='blue' >Confirm</Button></Td>}
                       </Tr>
                     ))}
-                      </>}
+                      </>} */}
                      </Tbody>
                       </Table>
   

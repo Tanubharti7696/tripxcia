@@ -1,5 +1,5 @@
 import { useGlobalData } from '@/hooks/GlobalData'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   Card,
   CardHeader,
@@ -13,9 +13,48 @@ import {
 
 } from "@material-tailwind/react";
 import makeRequest from '@/data/api';
-import { DeleteClient } from '@/data/apis';
+import { DeleteClient, GetVendors } from '@/data/apis';
+import toast from 'react-hot-toast';
+import { useNavigate } from 'react-router-dom';
 export default function VendorList() {
-  const {vendors}=useGlobalData()
+  const token="Bearer "+localStorage.getItem('token')
+  const navigate = useNavigate();
+  const [vendors,setvendors] = useState([]);
+  const fetchVendors=async()=>{
+    try {
+        await makeRequest({
+            url:GetVendors,
+            method:'GET',
+            headers:{
+                'Content-Type':'application/json',
+                'Authorization':token
+            }
+
+        })
+        .then((response)=>{
+            console.log(response)
+            setvendors(response)
+        }
+        )
+        .catch((error)=>{
+            if (error.response && error.response.status === 403) {
+                toast.error('Token expired');
+            } else {
+  return navigate('/auth/signin')           }
+        })
+        
+    } catch (error) {
+        toast.error('Error fetching flight query')
+        return navigate('/auth/signin')
+    }
+};
+
+useEffect(()=>{
+  if(token.length>10){
+    fetchVendors();
+  }
+},[token]);
+
   return (
     <div className="mt-12 mb-8 flex flex-col gap-12">
     <Card>

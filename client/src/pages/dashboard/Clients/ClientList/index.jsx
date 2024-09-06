@@ -1,5 +1,5 @@
 import { useGlobalData } from '@/hooks/GlobalData'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   Card,
   CardHeader,
@@ -18,13 +18,15 @@ import {
 
 } from "@material-tailwind/react";
 import makeRequest from '@/data/api';
-import { DeleteClient, UpdateClient } from '@/data/apis';
+import { DeleteClient, GetClients, UpdateClient } from '@/data/apis';
 import { Edit, Trash } from 'lucide-react';
 import Swal from 'sweetalert2';
 import { FormControl, FormLabel, Grid } from '@chakra-ui/react';
+import toast from 'react-hot-toast';
+import { useNavigate } from 'react-router-dom';
 export default function ClientList() {
-  const {clients,token}=useGlobalData();
   const [editOn,setEditOn]=React.useState(false);
+  const navigate = useNavigate();
   const [selectedClient,setSelectedClient]=React.useState(null);
   const form=[
     {
@@ -108,6 +110,48 @@ export default function ClientList() {
 
 
   ]
+  const [clients,setclients] = useState([]);
+  const token="Bearer "+localStorage.getItem('token')
+
+  const fetchClients=async()=>{
+    try {
+        await makeRequest({
+            url:GetClients,
+            method:'GET',
+            headers:{
+                'Content-Type':'application/json',
+                'Authorization':token
+            }
+
+        })
+        .then((response)=>{
+            console.log(response)
+            setclients(response.result)
+        }
+        )
+        .catch((error)=>{
+            if (error.response && error.response.status === 403) {
+                toast.error('Token expired');
+            } else {
+                return navigate('/auth/signin')           
+            }
+        })
+
+        
+    } catch (error) {
+        toast.error('Error fetching flight query');
+        return navigate('/auth/signin');
+
+    }
+
+};
+
+useEffect(()=>{
+  if(token.length>10){
+    fetchClients()
+  }
+},[token])
+
   return (
     <div className="mt-12 mb-8 flex flex-col gap-12">
      {selectedClient!==null && (

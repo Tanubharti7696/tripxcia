@@ -50,7 +50,6 @@ navigate('/dashboard/quota-hotel')
                           <Td borderRightColor={'white'} borderRightWidth={0.5}>Address</Td>
                           <Td borderRightColor={'white'} borderRightWidth={0.5}>Contact</Td>
                           <Td borderRightColor={'white'} borderRightWidth={0.5}>Email</Td>
-               
                           <Td borderRightColor={'white'} borderRightWidth={0.5}>Total Cost</Td>
                           {isTable && <Td>Status</Td>}
 
@@ -73,7 +72,7 @@ navigate('/dashboard/quota-hotel')
                           }}
                           >Confirm</Button></Td>}
                       </Tr>
-                      {duplicate && <>
+                      {/* {duplicate && <>
                         {duplicate.length>0 && duplicate.map((item,index)=>(
                       <Tr key={index} gap={0}>
                           <Td borderRightColor={'white'} borderRightWidth={0.5}>{item.hotelName}</Td>
@@ -92,7 +91,7 @@ navigate('/dashboard/quota-hotel')
                           }} colorScheme='blue' >Confirm</Button></Td>}
                       </Tr>
                     ))}
-                      </>}
+                      </>} */}
                      </Tbody>
                       </Table>
   
