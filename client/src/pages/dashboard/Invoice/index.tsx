@@ -181,7 +181,7 @@ body {
         )
         :data?.serviceType ==='Cab'?(
             <>
-            <p>Vehical Type - {data?.checkInDate}</p>
+            <p>Vehical Type - {data?.cabType}</p>
                 <p>Booking Date - {data?.bookingDate }</p>
                 <p>Location - {data?.city}</p>
                 <br /><br />
@@ -198,9 +198,18 @@ body {
     
         <h4 style={{ float: 'right' }}> </h4><br></br>
 
+
         <h4 style={{ float: 'right' }}>Management Fee</h4><br></br>
-        <h4 style={{ float: 'right' }}>CGST 18%</h4><br></br>
-         <h4 style={{ float: 'right' }}>SGST 18%</h4>    
+        {
+            data?.serviceType==='Cab' ||  data?.serviceType==='Hotel'?(<>
+            <h4 style={{ float: 'right' }}>CGST 2.5%</h4><br></br>
+            <h4 style={{ float: 'right' }}>SGST 2.5%</h4>   
+            </>):
+            (<>
+                <h4 style={{ float: 'right' }}>CGST 9%</h4><br></br>
+                <h4 style={{ float: 'right' }}>SGST 9%</h4>   </>)
+            
+        } 
 
  </td>
         <td align="right">{(Number(data?.ourCost)).toFixed(2)}<br></br>
@@ -217,7 +226,19 @@ body {
                                                                 {Number(data?.prf).toFixed(2)}
                 
                 </p>
+                {
+            data?.serviceType==='Cab' ||  data?.serviceType==='Hotel'?(<>
+            <p style={{
+                    textAlign: 'right', marginTop: '0px'    
+                }}>
+                {Number(data?.prf * 0.025).toFixed(2)}
+                </p>
                 <p style={{
+                    textAlign: 'right', marginTop: '0px'    
+                }}>
+                {Number(data?.prf * 0.025).toFixed(2)}
+                </p></>):(<>
+                    <p style={{
                     textAlign: 'right', marginTop: '0px'    
                 }}>
                 {Number(data?.prf * 0.09).toFixed(2)}
@@ -226,7 +247,9 @@ body {
                     textAlign: 'right', marginTop: '0px'    
                 }}>
                 {Number(data?.prf * 0.09).toFixed(2)}
-                </p>
+                </p></>)
+                
+                }
             <p style={{ textAlign: 'right', marginTop: '0px' }}>
             <br></br>
              </p>
@@ -238,10 +261,23 @@ body {
 </tr>
 <tr>
     <td align="center"><h3>Total Amount</h3></td>
-    <td align="right"><h3>{((Number(data?.ourCost)+Number(data?.prf)) + ((data?.prf * 0.18)*2)).toFixed(2)}</h3></td>
+    {
+        data?.serviceType==='Cab' ||  data?.serviceType==='Hotel'?(<>
+        <td align="right"><h3>{((Number(data?.ourCost)+Number(data?.prf)) + ((data?.prf * 0.05)*2)).toFixed(2)}</h3></td>
+        </>):(<>
+            <td align="right"><h3>{((Number(data?.ourCost)+Number(data?.prf)) + ((data?.prf * 0.18)*2)).toFixed(2)}</h3></td>
+            </>)
+    }
+    
 </tr>
 <tr>
-    <td><h4>Amount in words - {toWords(((Number(data?.ourCost)+Number(data?.prf)) + ((data?.prf * 0.18)*2)).toFixed(2))} Only</h4></td>
+{
+        data?.serviceType==='Cab'||  data?.serviceType==='Hotel'?(<>
+        <td><h4>Amount in words - {toWords(((Number(data?.ourCost)+Number(data?.prf)) + ((data?.prf * 0.025)*2)).toFixed(2))} Only</h4></td>
+        </>):(<>
+            <td><h4>Amount in words - {toWords(((Number(data?.ourCost)+Number(data?.prf)) + ((data?.prf * 0.18)*2)).toFixed(2))} Only</h4></td>
+            </>)
+    }
 </tr>
 </tbody>
 </table>

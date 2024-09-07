@@ -69,6 +69,7 @@ const token="Bearer "+localStorage.getItem('token');
       }
     },[token]);
 console.log(selector.query)
+console.log(queries)
   // const [data,setdata]=useState(FlightQuery);
   return (
     <div className="mt-12 mb-8 flex flex-col gap-12">
@@ -428,7 +429,7 @@ console.log(selector.query)
         <table className="w-full min-w-[640px] table-auto">
           <thead>
             <tr>
-              {["SL","ID", "Client Name", "Staff", "Service", "Status","Booking Type","Cheking Date" ,"Action"].map((el) => (
+              {["SL","ID", "Client Name", "Staff", "Service", "Status","Booking Type","Booking Date" ,"Action"].map((el) => (
                 <th
                   key={el}
                   className="border-b border-blue-gray-50 py-3 px-5 text-left"
@@ -520,22 +521,22 @@ console.log(selector.query)
                         {row.duplicate.length>0 ? 
                         row?.confirmed ?? 'No data found'
                       :
-                      row.hotelName
+                      row.cabBookingType
                       }
                       </Typography>
                     </td>
                     <td className={className}>
                     <Typography className="text-xs font-semibold text-blue-gray-600">
-                        {row.checkInDate}
+                        {row.bookingDate}
                       </Typography>
                     </td>
                     <td className={className}>
                    {row.status===1 ? 
                   (
                     <Stack direction="row" spacing={4}>
-                      <Ticket onClick={()=>{
+                      {/* <Ticket onClick={()=>{
                         navigate(`/hotel/bill/${row._id}`)
-                      }}  style={{cursor:'pointer'}} />
+                      }}  style={{cursor:'pointer'}} /> */}
                  
                       <Receipt  style={{cursor:'pointer'}}  onClick={()=>{
                         navigate(`/invoice/${row._id}`)

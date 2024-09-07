@@ -187,6 +187,19 @@ export default function Ticket() {
         <Flex justifyContent="space-between">
           <Box>
             <Text fontSize="sm" fontWeight="bold">
+            Meal
+            </Text>
+          </Box>
+          <Box textAlign="right">
+            <Badge colorScheme={data?.meal?"green":"red"}>{data.refundable ? 'MEAl-Include' : 'Meal-Exclude'}</Badge>
+          </Box>
+        </Flex>
+
+        <Divider />
+
+        <Flex justifyContent="space-between">
+          <Box>
+            <Text fontSize="sm" fontWeight="bold">
             Passenger Name
             </Text>
             <Text>{data?.passengerName}</Text>
