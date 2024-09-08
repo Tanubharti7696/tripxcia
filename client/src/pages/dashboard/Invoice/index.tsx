@@ -268,7 +268,6 @@ body {
             <td align="right"><h3>{((Number(data?.ourCost)+Number(data?.prf)) + ((data?.prf * 0.18)*2)).toFixed(2)}</h3></td>
             </>)
     }
-    
 </tr>
 <tr>
 {

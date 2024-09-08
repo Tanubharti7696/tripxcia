@@ -116,6 +116,11 @@ import TableCabQuery from "@/components/TableCabQuery";
       label:'Booking No' ,
       id:'bookconfirmNo',
       type:'text',
+    },
+    {
+      label:"Hotel Image",
+      id:"hotelImage",
+      type:'file'
     }
   ]
 
@@ -196,6 +201,7 @@ import TableCabQuery from "@/components/TableCabQuery";
   guestName:'',
   bookconfirmNo:'',
   invoiceNumber:'',
+  hotelImage:"",
   vendorName:'',
   confirmedQuery:state.query.query
 })
@@ -873,7 +879,7 @@ const [hotelTable,sethotelTable]=useState(false)
           duplicate:formsData
           
           }
-     const res=  await axios.put(HotelDup+'?id='+QueryID,
+     const res=  await makeRequest(HotelDup+'?id='+QueryID,
        body,
        {
         headers:{
@@ -1136,6 +1142,7 @@ sethotelData({...hotelData,invoiceNumber:e.target.value})         }} type="text"
           headers:{
             Authorization:token
           }
+          
                 })
                 .then((response)=>{
                   toast.success('Query Genarated Successfully')

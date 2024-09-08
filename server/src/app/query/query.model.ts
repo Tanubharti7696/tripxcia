@@ -47,6 +47,7 @@ const QuerySchema = new mongoose.Schema<QueryInterface>({
     address: { type: String, required: false },
     contact: { type: String, required: false },
     email: { type: String, required: false },
+    hotelImage: { type: String, required: false },
     guestName: { type: String, required: false },
     bookconfirmNo: { type: String, required: false },
     price: { type: Number, required: false },

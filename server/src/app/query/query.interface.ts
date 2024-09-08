@@ -57,6 +57,7 @@ export interface QueryInterface{
     cabParkingetc?:number,
     cabBookingType?:string,
     cabNumber?:string,
+    hotelImage?:string,
     cabGuestName?:string,
     cabMOBNO?:string,
     cabPickTime?:string,

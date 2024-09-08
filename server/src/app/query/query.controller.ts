@@ -162,10 +162,11 @@ export const HotelQueryDup=async(req:Request,res:Response)=>{
     }
 }
 
-export const FlightQueryConfirmed=async(req:Request,res:Response)=>{
+export const FlightQueryConfirmed=async(req:any,res:Response)=>{
     try {
         const queryId=req.params.id;
         
+        const imageUrl = req.file.path;  // URL of the uploaded image
         
         await QueryModel.findOneAndUpdate({_id:queryId},{
             passengerName:req.body.passengerName,
@@ -175,6 +176,7 @@ export const FlightQueryConfirmed=async(req:Request,res:Response)=>{
             class:req.body.class,
             meal:req.body.meal,
             invoiceNumber:req.body.invoiceNumber,
+            hotelImage:imageUrl,
             vendorName:req.body.vendorName,
             confirmed:req.body.confirmedQuery,
             status:1,

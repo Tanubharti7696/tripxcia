@@ -4,6 +4,7 @@ import { Router } from "./routes";
 import mongoose from "mongoose";
 import cors from "cors";
 import morgan from "morgan";
+const cloudinary = require('cloudinary').v2;
 import fs from "fs";
 dotenv.config();
 const ser="hh"
@@ -12,6 +13,12 @@ const db = mongoose.connection;
 db.on("error", console.error.bind(console, "connection error:"));
 db.once("open", function() {
   console.log("Connected to MongoDB");
+});
+
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
 const app: Express = express();

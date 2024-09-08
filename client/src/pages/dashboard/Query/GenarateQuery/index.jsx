@@ -54,6 +54,7 @@ import FormDuplicate from "@/components/FormDuplicate";
 import HotelTable from "@/components/HotelTable";
 import TableCabQuery from "@/components/TableCabQuery";
 import HotelDuplicate from "@/components/HotelDuplicate";
+import DuplicateFlightRoundWay from "@/components/DuplicateFlightRoundWay";
 
 const steps = [
   { title: 'Step 1', description: 'Contact Info' },
@@ -227,7 +228,7 @@ export default function GenarateQuery() {
   const [formsData, setFormsData] = useState(Array.from({ length: totalFlightTicket }, () => ({})));
   const [cabformsData, setcabFormsData] = useState(Array.from({ length: totalCabBooking }, () => ({})));
   const [hotelformsData, sethotelFormsData] = useState(Array.from({ length: totalHotal }, () => ({})));
-
+    console.log('form data',formsData)
   const handleFormChange = (index, data) => {
     setFormsData((prevData) => {
       const newData = [...prevData];
@@ -1139,7 +1140,7 @@ const memoizedOptions = useMemo(() => airports, [airports]);
 
           </>
           
-        {Array.from({length:totalFlightTicket}).map((_,index)=>(
+        {/* {Array.from({length:totalFlightTicket}).map((_,index)=>(
         <>
         <FormDuplicate key={index} index={index} onChange={handleFormChange} />
         <Button style={{backgroundColor:'red'}} onClick={()=>{
@@ -1149,7 +1150,7 @@ const memoizedOptions = useMemo(() => airports, [airports]);
         }}>Remove</Button>
 
         </>
-        ))}
+        ))} */}
        
      
        {/* <FormControl>
@@ -1167,6 +1168,8 @@ const memoizedOptions = useMemo(() => airports, [airports]);
               <Heading size='md' textTransform='uppercase' color={'blue.500'}>Return</Heading>
 
 <Grid templateColumns='repeat(3, 1fr)' gap={5}  >
+
+
         <FormControl>
          <FormLabel>Flight Type</FormLabel>
          <NormalSelect value={returnData.flightType} onChange={(e)=>{
@@ -1356,6 +1359,23 @@ const memoizedOptions = useMemo(() => airports, [airports]);
         </FormControl>
         </Grid>
  
+        {Array.from({length:totalFlightTicket}).map((_,index)=>(
+        <>
+        <DuplicateFlightRoundWay key={index} index={index} onChange={handleFormChange} />
+        <Button style={{backgroundColor:'red'}} onClick={()=>{
+          setTotalFlightTicket(totalFlightTicket-1)
+          setFormsData((prevData) => prevData.filter((_, i) => i !== index));
+
+        }}>Remove</Button>
+
+        </>
+        ))}
+       
+     
+       <FormControl>
+        <Button style={{backgroundColor:'blue'}} onClick={()=>{setTotalFlightTicket(totalFlightTicket+1)}}>Duplicate</Button>
+
+        </FormControl>
 
           </>
           
