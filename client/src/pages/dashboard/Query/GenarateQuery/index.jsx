@@ -55,6 +55,7 @@ import HotelTable from "@/components/HotelTable";
 import TableCabQuery from "@/components/TableCabQuery";
 import HotelDuplicate from "@/components/HotelDuplicate";
 import DuplicateFlightRoundWay from "@/components/DuplicateFlightRoundWay";
+import CabFormDuplicate from "@/components/CabFormDuplicate";
 
 const steps = [
   { title: 'Step 1', description: 'Contact Info' },
@@ -1618,6 +1619,7 @@ const memoizedOptions = useMemo(() => airports, [airports]);
       data.service==='Cab'?
       (
         <>
+
           {data?.cabBookingType ==="8Hrs 80kms"?
           (<>
           <form>
@@ -1780,8 +1782,26 @@ const memoizedOptions = useMemo(() => airports, [airports]);
                 <Input disabled type="number" placeholder="PRF" value={Number(data.OurCost)+Number(data.Prf)} />
                </FormControl>
                </Grid>
+               
                </form>):
           null}
+          {Array.from({length:totalCabBooking}).map((_,index)=>(
+        <>
+        <CabFormDuplicate key={index} index={index} onChange={handlecabFormChange} />
+        <Button style={{backgroundColor:'red'}} onClick={()=>{
+          setTotalCabBooking(totalCabBooking-1)
+          setcabFormsData((prevData) => prevData.filter((_, i) => i !== index));
+
+        }}>Remove</Button>
+
+        </>
+        ))}
+       
+     
+       <FormControl>
+        <Button style={{backgroundColor:'blue'}} onClick={()=>{setTotalCabBooking(totalCabBooking+1)}}>Duplicate</Button>
+
+        </FormControl>
         </>
       )
       :
