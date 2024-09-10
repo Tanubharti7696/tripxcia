@@ -1,6 +1,6 @@
 import React from 'react'
 
-const CabFormDuplicate = () => {
+const CabFormDuplicate = ({index,onchange}) => {
   return (
     <div>
       

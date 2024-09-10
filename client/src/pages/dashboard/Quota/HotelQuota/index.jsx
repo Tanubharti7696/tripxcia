@@ -105,7 +105,7 @@ const navigate=useNavigate();
           </thead>
         {queries.length>0 ?   <tbody>
             {queries
-            .filter(a=>a.serviceType==='Hotel')
+            .filter(a=>a.serviceType==='Hotel' && a?.stepFirst !==1)
             .map((row,index)=> {
                 const className = `py-3 px-5 ${
                   index === queries.length - 1

@@ -84,7 +84,7 @@ export default function CabQuota() {
             </tr>
           </thead>
         {queries.length>0 ?   <tbody>
-            {queries.map((row,index)=> {
+            {queries.filter(a=>a?.stepFirst!==1).map((row,index)=> {
                 const className = `py-3 px-5 ${
                   index === queries.length - 1
                     ? ""

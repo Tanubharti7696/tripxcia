@@ -2,19 +2,12 @@ import {
   Card,
   CardHeader,
   CardBody,
-  Typography,
-  Avatar,
-  Chip,
-  Tooltip,
-  Progress,
   Button,
   Input,
   Stepper,
   Step,
 
 } from "@material-tailwind/react";
-import { EllipsisVerticalIcon } from "@heroicons/react/24/outline";
-import { authorsTableData, projectsTableData } from "@/data";
 import {
   Box,
   Checkbox,
@@ -26,18 +19,11 @@ import {
   Select as NormalSelect,
   Stack,
   StackDivider,
-  StepDescription,
-  StepIcon,
-  StepIndicator,
-  StepNumber,
-  StepSeparator,
-  StepStatus,
-  StepTitle,
   Text,
   useSteps,
   Spinner
 } from '@chakra-ui/react'
-import { lazy, useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import Select from "react-tailwindcss-select";
 import { Form } from "react-router-dom";
 import FlightExtraForm from "@/components/FlightExtraForm";
@@ -47,7 +33,7 @@ import { airlines } from "@/data/airlines";
 import airports  from "@/data/airports";
 import TableFlightQuery from "@/components/TableFlightQuery";
 import makeRequest from "@/data/api";
-import { SaveCab, SaveFlight, SaveHotel } from "@/data/apis";
+import { CabFirstStap, FlightFirstStep, HotelFirstStap, SaveCab, SaveFlight, SaveHotel } from "@/data/apis";
 import { useGlobalData } from "@/hooks/GlobalData";
 import { useNavigate, useNavigation } from "react-router-dom/dist";
 import FormDuplicate from "@/components/FormDuplicate";
@@ -201,6 +187,7 @@ const services=[
 
 ]
 export default function GenarateQuery() {
+  const [queryId,setQueryId] = useState("");
   const {clients}=useGlobalData()
   const [currentStep, setCurrentStep] = useState(0)
   const { activeStep } = useSteps({
@@ -394,8 +381,8 @@ const {token}=useGlobalData()
       returnFliight:returnData,
     }
    await makeRequest({
-    method:'POST',
-    url:`${SaveFlight}`,
+    method:'PUT',
+    url:`${SaveFlight}/${queryId}`,
     data:body,
     headers:{
       Authorization:token
@@ -452,8 +439,8 @@ const {token}=useGlobalData()
                 noOfChildren12:data?.noOfChildren12,
     }
    await makeRequest({
-    method:'POST',
-    url:`${SaveHotel}`,
+    method:'PUT',
+    url:`${SaveHotel}/${queryId}`,
     data:body,
     headers:{
       Authorization:token
@@ -509,16 +496,14 @@ const {token}=useGlobalData()
       cabPerKmsrate:data?.cabPerKmsrate,
       cabTollPermit:data?.cabTollPermit,
       duplicate:formsData,
-      via:data?.via,
     }
    await makeRequest({
-    method:'POST',
-    url:`${SaveCab}`,
+    method:'PUT',
+    url:`${SaveCab}/${queryId}`,
     data:body,
     headers:{
       Authorization:token
-    } 
-
+    }
    })
     .then((response)=>{
       if(response){
@@ -550,7 +535,7 @@ const {token}=useGlobalData()
   }
   console.log('query',data)
 
-const firstStepHandle=()=>{
+const firstStepHandle=async()=>{
  if(data.service==='Flight'){
   if(data.client==='Select'){
     toast.error('Please select client')
@@ -561,23 +546,58 @@ const firstStepHandle=()=>{
     return
   }
   else{
-   Swal.fire({
-    title: 'Are you sure?',
-    text: "You want to genarate query for this service",
-    icon: 'warning',
-    showCancelButton: true,
-    confirmButtonColor: '#3085d6',
-    cancelButtonColor: '#d33',
-    confirmButtonText: 'Yes, genarate it!'
-  }).then((result) => {
-    if (result.isConfirmed) {
-      setCurrentStep(currentStep+1)
+    const body={
+      client:data?.client,
+      serviceType:data?.service,
+      PassengerNumber:data?.passengerNumber,
+      DomesticOrInternational:data?.domesticOrInternational,
+      OneWayOrRoundTrip:data?.oneWayOrRoundway,
+      DepartureDate:data?.departureDate,
+      returnDate:data?.returnDate,
+      departureFrom:data?.departureFrom,
+      arrivalTo:data?.arrivalTo,
     }
-    else{
-      toast.error('Query not genarated')
-    }
-  })
+   await makeRequest({
+    method:'POST',
+    url:`${FlightFirstStep}`,
+    data:body,
+    headers:{
+      Authorization:token
+    } 
 
+   })
+    .then((response)=>{
+      if(response){
+        toast.success('Query Genarated Successfully')
+        setQueryId(response?.result?._id);
+        Swal.fire({
+          title: 'Are you sure?',
+          text: "You want to genarate query for this service",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Yes, genarate it!'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            setCurrentStep(currentStep+1)
+          }
+          else{
+            toast.error('Query not genarated')
+            return;
+          }
+        })
+      }
+      else{
+        toast.error('Failed to genarate query')
+        return;
+      }
+    })
+    .catch((error)=>{
+      toast.error('Failed to genarate query')
+      return;
+    }
+    )
 
   }
 }
@@ -596,22 +616,56 @@ const firstStepHandle=()=>{
     return
   }
   else{
-   Swal.fire({
-    title: 'Are you sure?',
-    text: "You want to genarate query for this service",
-    icon: 'warning',
-    showCancelButton: true,
-    confirmButtonColor: '#3085d6',
-    cancelButtonColor: '#d33',
-    confirmButtonText: 'Yes, genarate it!'
-  }).then((result) => {
-    if (result.isConfirmed) {
-      setCurrentStep(currentStep+1)
+    const body={
+      client:data?.client,
+      serviceType:data?.service,
+      cabBookingType:data?.cabBookingType,
+      tripStartDateTime:data?.tripStartDateTime,
+      tripEndDateTime:data?.tripEndDateTime,
+      cabType:data?.cabType,
+      totalPassenger:data?.totalPassenger,
+      city:data?.city,
+      bookingDate:data?.bookingDate,
     }
-    else{
-      toast.error('Query not genarated')
-    }
-  })
+    console.log("cab fist step",body)
+   await makeRequest({
+    method:'POST',
+    url:`${CabFirstStap}`,
+    data:body,
+    headers:{
+      Authorization:token
+    } 
+   })
+    .then((response)=>{
+      if(response){
+        toast.success('Query Genarated Successfully')
+        setQueryId(response?.result?._id);
+        Swal.fire({
+          title: 'Are you sure?',
+          text: "You want to genarate query for this service",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Yes, genarate it!'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            setCurrentStep(currentStep+1)
+          }
+          else{
+            toast.error('Query not genarated')
+          }
+        })
+      }
+      else{
+        toast.error('Failed to genarate query')
+        return;
+      }
+    })
+    .catch((error)=>{
+      toast.error('Failed to genarate query')
+      return;
+    })
 
   }
 }
@@ -624,24 +678,64 @@ if(data.service==='Hotel'){
     toast.error('Please select service')
     return
   }
-  Swal.fire({
-    title: 'Are you sure?',
-    text: "You want to genarate query for this service",
-    icon: 'warning',
-    showCancelButton: true,
-    confirmButtonColor: '#3085d6',
-    cancelButtonColor: '#d33',
-    confirmButtonText: 'Yes, genarate it!'
-  }).then(async(result) => {
-    if (result.isConfirmed) {
-      setCurrentStep(currentStep+1)
-
-
+  const body={
+    client:data?.client,
+    serviceType:data?.service,
+    city:data?.city,
+    DomesticOrInternational:data?.domesticOrInternational,
+    hotelName:data?.hotelName,
+    checkInDate:data?.checkInDate,
+      checkOutDate:data?.checkOutDate,
+             noOfNights:data?.noOfNights,
+             mealPlan:data?.mealPlan,
+             hotelCategory:data?.hotelCategory,
+             roomOcuppency:data?.roomOcuppency,
+             noOfRooms:data?.noOfRooms,
+              noOfGuests:data?.noOfGuests,
+              noOfAdults:data?.noOfAdults,
+              noOfChildren6:data?.noOfChildren6,
+              noOfChildren12:data?.noOfChildren12,
+  }
+ await makeRequest({
+  method:'POST',
+  url:`${HotelFirstStap}`,
+  data:body,
+  headers:{
+    Authorization:token
+  } 
+ })
+  .then((response)=>{
+    if(response){
+      toast.success('Query Genarated Successfully')
+      setQueryId(response?.result?._id);
+      Swal.fire({
+        title: 'Are you sure?',
+        text: "You want to genarate query for this service",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, genarate it!'
+      }).then(async(result) => {
+        if (result.isConfirmed) {
+          setCurrentStep(currentStep+1)
+        }
+        else{
+          toast.error('Query not genarated')
+        }
+    })
     }
     else{
-      toast.error('Query not genarated')
+      toast.error('Failed to genarate query')
+      return;
     }
-})
+  })
+  .catch((error)=>{
+    toast.error('Failed to genarate query')
+    return;
+  }
+  )
+  
 }
 }
 

@@ -99,7 +99,7 @@ console.log(selector.query)
           </thead>
         {FlightQuery.length>0 ?   <tbody>
             {FlightQuery
-            .filter(a=>a.flightType!=='')
+            .filter(a=>a.flightType!=='' && a?.stepFirst!==1)
             .map((row,index)=> {
                 const className = `py-3 px-5 ${
                   index === FlightQuery.length - 1

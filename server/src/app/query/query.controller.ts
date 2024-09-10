@@ -1,36 +1,24 @@
 import { Request, Response } from "express";
 import { QueryModel } from "./query.model";
 
-export const FlightQuerySave=async(req:Request,res:Response)=>{
+export const FlightQueryfirstStep =async(req:Request,res:Response)=>{
     try {
         const currentDate = new Date();
         const formattedDate = currentDate.toISOString().split('T')[0];
-        const query = await new QueryModel({
+        const query = await new QueryModel ({
             client:req.body.client,
             serviceType:'Flight',
             PassengerNumber:req.body.PassengerNumber,
             DomesticOrInternational:req.body.DomesticOrInternational,
             OneWayOrRoundTrip:req.body.OneWayOrRoundTrip,
-            FromLocation:req.body.FromLocation,
-            ToLocation:req.body.ToLocation,
             DepartureDate:req.body.DepartureDate,
             returnDate:req.body.returnDate,
             flightType:req.body.flightType,
-            airlineName:req.body.airlineName,
-            flightNumber:req.body.flightNumber,
-            fareType:req.body.fareType,
             departureFrom:req.body.departureFrom,
-            departureTime:req.body.departureTime,
             arrivalTo:req.body.arrivalTo,
-            arrivalTime:req.body.arrivalTime,
-            ourCost:req.body.ourCost,
-            prf:req.body.prf,
-            refundable:req.body.refundable,
+            stepFirst:1,
             bookingDate:formattedDate,
-            duplicate:req.body.duplicate,
-            via:req.body.via,
             status:0,
-            returnFliight:req.body.returnFliight ?? {},
         });
         console.log(query)
         await query.save().then((result)=>{
@@ -47,8 +35,45 @@ export const FlightQuerySave=async(req:Request,res:Response)=>{
     }
 }
 
+export const FlightQuerySave=async(req:Request,res:Response)=>{
+    try {
+        const queryId=req.params.id;
+        const currentDate = new Date();
+        const formattedDate = currentDate.toISOString().split('T')[0];
+        await QueryModel.findOneAndUpdate({_id:queryId},{
+            FromLocation:req.body.FromLocation,
+            ToLocation:req.body.ToLocation,
+            flightType:req.body.flightType,
+            airlineName:req.body.airlineName,
+            flightNumber:req.body.flightNumber,
+            fareType:req.body.fareType,
+            departureTime:req.body.departureTime,
+            arrivalTime:req.body.arrivalTime,
+            ourCost:req.body.ourCost,
+            prf:req.body.prf,
+            refundable:req.body.refundable,
+            bookingDate:formattedDate,
+            duplicate:req.body.duplicate,
+            via:req.body.via,
+            stepFirst:2,
+            status:0,
+            returnFliight:req.body.returnFliight ?? {},
+        }).then((result)=>{
+            console.log(result)
+            return res.status(200).json({message:"Query Saved Successfully",result:result});
+        }).catch((error)=>{
+            console.log(error)
+            return res.status(500).json({message:error});
+        });
+        
 
-export const cabQuerySave=async(req:Request,res:Response)=>{
+    } catch (error) {
+        return res.status(500).json({message:error});
+    }
+}
+
+
+export const cabQueryfirstStep=async(req:Request,res:Response)=>{
     try {
         const currentDate = new Date();
         const formattedDate = currentDate.toISOString().split('T')[0];
@@ -59,17 +84,10 @@ export const cabQuerySave=async(req:Request,res:Response)=>{
             tripStartDateTime:req.body.tripStartDateTime,
             tripEndDateTime:req.body.tripEndDateTime,
             cabType:req.body.cabType,
-            totalPassenger:req.body.totalPassenger,
-            ourCost:req.body.ourCost,
-            prf:req.body.prf,
             city:req.body.city,
+            totalPassenger:req.body.totalPassenger,
             bookingDate:formattedDate,
-            cabExtraPerHours:req.body.cabExtraPerHours,
-            cabExtraKMS:req.body.cabExtraKMS,
-            cabParkingetc:req.body.cabParkingetc,
-            cabPerKmsrate:req.body.cabPerKmsrate,
-            cabTollPermit:req.body.cabTollPermit,
-            duplicate:req.body.duplicate,
+            stepFirst:1,
             status:0,
         });
         console.log(query)
@@ -87,7 +105,38 @@ export const cabQuerySave=async(req:Request,res:Response)=>{
     }
 }
 
-export const HotelQuery=async(req:Request,res:Response)=>{
+export const cabQuerySave=async(req:Request,res:Response)=>{
+    try {
+        const queryId=req.params.id;
+        const currentDate = new Date();
+        const formattedDate = currentDate.toISOString().split('T')[0];
+        await QueryModel.findOneAndUpdate({_id:queryId},{
+            ourCost:req.body.ourCost,
+            prf:req.body.prf,
+            city:req.body.city,
+            bookingDate:formattedDate,
+            cabExtraPerHours:req.body.cabExtraPerHours,
+            cabExtraKMS:req.body.cabExtraKMS,
+            cabParkingetc:req.body.cabParkingetc,
+            cabPerKmsrate:req.body.cabPerKmsrate,
+            cabTollPermit:req.body.cabTollPermit,
+            duplicate:req.body.duplicate,
+            stepFirst:2,
+            status:0,
+        }).then((result)=>{
+            console.log(result)
+            return res.status(200).json({message:"Query Saved Successfully",result:result});
+        }).catch((error)=>{
+            console.log(error)
+            return res.status(500).json({message:error});
+        });
+        
+    } catch (error) {
+        return res.status(500).json({message:error});
+    }
+}
+
+export const HotelQueryfirstStep=async(req:Request,res:Response)=>{
     try {
         const currentDate = new Date();
         const formattedDate = currentDate.toISOString().split('T')[0];
@@ -108,11 +157,9 @@ export const HotelQuery=async(req:Request,res:Response)=>{
                 noOfAdults:req.body.noOfAdults,
                 noOfChildren6:req.body.noOfChildren6,
                 noOfChildren12:req.body.noOfChildren12,
+                bookingDate:formattedDate,
+                stepFirst:1,
                 status:0,
-
-
-
-
         });
         console.log(query)
         await query.save().then((result)=>{
@@ -123,7 +170,34 @@ export const HotelQuery=async(req:Request,res:Response)=>{
             return res.status(500).json({message:error});
         });
         
+    } catch (error) {
+        return res.status(500).json({message:error});
+    }
+}
 
+export const HotelQuery=async(req:Request,res:Response)=>{
+    try {
+        const queryId=req.params.id;
+        const currentDate = new Date();
+        const formattedDate = currentDate.toISOString().split('T')[0];
+        await QueryModel.findOneAndUpdate({_id:queryId},{
+                hotelName:req.body.hotelName,
+                address:req.body.address,
+                email:req.body.email,
+                contact:req.body.contact,
+                bookingDate:formattedDate,
+                ourCost:req.body.ourCost,
+                stepFirst:2,
+                prf:req.body.prf,
+                status:0,
+        }).then((result)=>{
+            console.log(result)
+            return res.status(200).json({message:"Query Saved Successfully",result:result});
+        }).catch((error)=>{
+            console.log(error)
+            return res.status(500).json({message:error});
+        });
+        
     } catch (error) {
         return res.status(500).json({message:error});
     }

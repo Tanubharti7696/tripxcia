@@ -21,3 +21,6 @@ export const HotelDup=API_URL+"query/hotel/dup/";
 export const SaveCab = API_URL+"query/cab/save";
 export const getCabQueries = API_URL+"query/cab/list";
 export const ConfirmCabQuery = API_URL+"query/cab/confirm/";
+export const FlightFirstStep = API_URL+"query/flight/firststep";
+export const HotelFirstStap = API_URL+"query/hotel/firststep";
+export const CabFirstStap = API_URL+"query/cab/firststep";

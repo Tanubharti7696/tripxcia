@@ -70,6 +70,11 @@ export interface QueryInterface{
     cabTotalextraKms?:number,
     cabTotalkms?:number,
     cabGrosstotal?:number,
+    stepFirst?:number,
+    tripEndDateTime?:string,
+    tripStartDateTime?:string,
+    cabType?:string,
+    totalPassenger?:number,
     duplicate?:any[];
     via:{
         FlightNumber:string;
