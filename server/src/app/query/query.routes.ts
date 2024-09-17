@@ -1,26 +1,25 @@
 import { Router } from "express";
 const cloudinary = require('cloudinary').v2;
-const { CloudinaryStorage } = require('multer-storage-cloudinary');
 const multer = require('multer');
 
 import { CabQueryConfirmed, cabQueryfirstStep, cabQuerySave, findQueryByID, FlightQueryConfirmed, FlightQueryfirstStep, FlightQuerySave, getAllQueries, getCabQueries, getFlightQueries, getHotelQueries, HotelQuery, HotelQueryConfirmed, HotelQueryDup, HotelQueryfirstStep } from "./query.controller";
 const app=Router();
 
-const storage = new CloudinaryStorage({
-    cloudinary: cloudinary,
-    params: {
-      folder: 'uploads', // Folder in Cloudinary where images will be uploaded
-      allowedFormats: ['jpg', 'png', 'jpeg'],
-    },
-  });
+// const storage = new CloudinaryStorage({
+//     cloudinary: cloudinary,
+//     params: {
+//       folder: 'uploads', // Folder in Cloudinary where images will be uploaded
+//       allowedFormats: ['jpg', 'png', 'jpeg'],
+//     },
+//   });
 
-  const upload = multer({ storage: storage });
+  // const upload = multer({ storage: storage });
 
 //flight all crud
 app.post('/flight/firststep',FlightQueryfirstStep)
 app.put("/flight/save/:id",FlightQuerySave);
 app.get("/flight/list",getFlightQueries);
-app.put("/flight/confirm/:id",upload.single('hotelImage'),FlightQueryConfirmed);
+app.put("/flight/confirm/:id",FlightQueryConfirmed);
 app.get('/',getAllQueries);
 
 // hotel all crud

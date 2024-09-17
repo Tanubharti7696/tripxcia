@@ -9,6 +9,7 @@ const routes_1 = require("./routes");
 const mongoose_1 = __importDefault(require("mongoose"));
 const cors_1 = __importDefault(require("cors"));
 const morgan_1 = __importDefault(require("morgan"));
+const cloudinary = require('cloudinary').v2;
 const fs_1 = __importDefault(require("fs"));
 dotenv_1.default.config();
 const ser = "hh";
@@ -17,6 +18,11 @@ const db = mongoose_1.default.connection;
 db.on("error", console.error.bind(console, "connection error:"));
 db.once("open", function () {
     console.log("Connected to MongoDB");
+});
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 const app = (0, express_1.default)();
 const corsOptions = {

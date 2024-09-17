@@ -9,10 +9,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.findQueryByID = exports.getAllQueries = exports.getHotelQueries = exports.getCabQueries = exports.getFlightQueries = exports.HotelQueryConfirmed = exports.CabQueryConfirmed = exports.FlightQueryConfirmed = exports.HotelQueryDup = exports.HotelQuery = exports.cabQuerySave = exports.FlightQuerySave = void 0;
+exports.findQueryByID = exports.getAllQueries = exports.getHotelQueries = exports.getCabQueries = exports.getFlightQueries = exports.HotelQueryConfirmed = exports.CabQueryConfirmed = exports.FlightQueryConfirmed = exports.HotelQueryDup = exports.HotelQuery = exports.HotelQueryfirstStep = exports.cabQuerySave = exports.cabQueryfirstStep = exports.FlightQuerySave = exports.FlightQueryfirstStep = void 0;
 const query_model_1 = require("./query.model");
-const FlightQuerySave = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a;
+const FlightQueryfirstStep = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const currentDate = new Date();
         const formattedDate = currentDate.toISOString().split('T')[0];
@@ -22,17 +21,43 @@ const FlightQuerySave = (req, res) => __awaiter(void 0, void 0, void 0, function
             PassengerNumber: req.body.PassengerNumber,
             DomesticOrInternational: req.body.DomesticOrInternational,
             OneWayOrRoundTrip: req.body.OneWayOrRoundTrip,
-            FromLocation: req.body.FromLocation,
-            ToLocation: req.body.ToLocation,
             DepartureDate: req.body.DepartureDate,
             returnDate: req.body.returnDate,
+            flightType: req.body.flightType,
+            departureFrom: req.body.departureFrom,
+            arrivalTo: req.body.arrivalTo,
+            stepFirst: 1,
+            bookingDate: formattedDate,
+            status: 0,
+        });
+        console.log(query);
+        yield query.save().then((result) => {
+            console.log(result);
+            return res.status(200).json({ message: "Query Saved Successfully", result: result });
+        }).catch((error) => {
+            console.log(error);
+            return res.status(500).json({ message: error });
+        });
+    }
+    catch (error) {
+        return res.status(500).json({ message: error });
+    }
+});
+exports.FlightQueryfirstStep = FlightQueryfirstStep;
+const FlightQuerySave = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
+    try {
+        const queryId = req.params.id;
+        const currentDate = new Date();
+        const formattedDate = currentDate.toISOString().split('T')[0];
+        yield query_model_1.QueryModel.findOneAndUpdate({ _id: queryId }, {
+            FromLocation: req.body.FromLocation,
+            ToLocation: req.body.ToLocation,
             flightType: req.body.flightType,
             airlineName: req.body.airlineName,
             flightNumber: req.body.flightNumber,
             fareType: req.body.fareType,
-            departureFrom: req.body.departureFrom,
             departureTime: req.body.departureTime,
-            arrivalTo: req.body.arrivalTo,
             arrivalTime: req.body.arrivalTime,
             ourCost: req.body.ourCost,
             prf: req.body.prf,
@@ -40,11 +65,10 @@ const FlightQuerySave = (req, res) => __awaiter(void 0, void 0, void 0, function
             bookingDate: formattedDate,
             duplicate: req.body.duplicate,
             via: req.body.via,
+            stepFirst: 2,
             status: 0,
             returnFliight: (_a = req.body.returnFliight) !== null && _a !== void 0 ? _a : {},
-        });
-        console.log(query);
-        yield query.save().then((result) => {
+        }).then((result) => {
             console.log(result);
             return res.status(200).json({ message: "Query Saved Successfully", result: result });
         }).catch((error) => {
@@ -57,7 +81,7 @@ const FlightQuerySave = (req, res) => __awaiter(void 0, void 0, void 0, function
     }
 });
 exports.FlightQuerySave = FlightQuerySave;
-const cabQuerySave = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const cabQueryfirstStep = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const currentDate = new Date();
         const formattedDate = currentDate.toISOString().split('T')[0];
@@ -68,17 +92,10 @@ const cabQuerySave = (req, res) => __awaiter(void 0, void 0, void 0, function* (
             tripStartDateTime: req.body.tripStartDateTime,
             tripEndDateTime: req.body.tripEndDateTime,
             cabType: req.body.cabType,
-            totalPassenger: req.body.totalPassenger,
-            ourCost: req.body.ourCost,
-            prf: req.body.prf,
             city: req.body.city,
+            totalPassenger: req.body.totalPassenger,
             bookingDate: formattedDate,
-            cabExtraPerHours: req.body.cabExtraPerHours,
-            cabExtraKMS: req.body.cabExtraKMS,
-            cabParkingetc: req.body.cabParkingetc,
-            cabPerKmsrate: req.body.cabPerKmsrate,
-            cabTollPermit: req.body.cabTollPermit,
-            duplicate: req.body.duplicate,
+            stepFirst: 1,
             status: 0,
         });
         console.log(query);
@@ -94,8 +111,39 @@ const cabQuerySave = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         return res.status(500).json({ message: error });
     }
 });
+exports.cabQueryfirstStep = cabQueryfirstStep;
+const cabQuerySave = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const queryId = req.params.id;
+        const currentDate = new Date();
+        const formattedDate = currentDate.toISOString().split('T')[0];
+        yield query_model_1.QueryModel.findOneAndUpdate({ _id: queryId }, {
+            ourCost: req.body.ourCost,
+            prf: req.body.prf,
+            city: req.body.city,
+            bookingDate: formattedDate,
+            cabExtraPerHours: req.body.cabExtraPerHours,
+            cabExtraKMS: req.body.cabExtraKMS,
+            cabParkingetc: req.body.cabParkingetc,
+            cabPerKmsrate: req.body.cabPerKmsrate,
+            cabTollPermit: req.body.cabTollPermit,
+            duplicate: req.body.duplicate,
+            stepFirst: 2,
+            status: 0,
+        }).then((result) => {
+            console.log(result);
+            return res.status(200).json({ message: "Query Saved Successfully", result: result });
+        }).catch((error) => {
+            console.log(error);
+            return res.status(500).json({ message: error });
+        });
+    }
+    catch (error) {
+        return res.status(500).json({ message: error });
+    }
+});
 exports.cabQuerySave = cabQuerySave;
-const HotelQuery = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const HotelQueryfirstStep = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const currentDate = new Date();
         const formattedDate = currentDate.toISOString().split('T')[0];
@@ -116,10 +164,40 @@ const HotelQuery = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
             noOfAdults: req.body.noOfAdults,
             noOfChildren6: req.body.noOfChildren6,
             noOfChildren12: req.body.noOfChildren12,
+            bookingDate: formattedDate,
+            stepFirst: 1,
             status: 0,
         });
         console.log(query);
         yield query.save().then((result) => {
+            console.log(result);
+            return res.status(200).json({ message: "Query Saved Successfully", result: result });
+        }).catch((error) => {
+            console.log(error);
+            return res.status(500).json({ message: error });
+        });
+    }
+    catch (error) {
+        return res.status(500).json({ message: error });
+    }
+});
+exports.HotelQueryfirstStep = HotelQueryfirstStep;
+const HotelQuery = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const queryId = req.params.id;
+        const currentDate = new Date();
+        const formattedDate = currentDate.toISOString().split('T')[0];
+        yield query_model_1.QueryModel.findOneAndUpdate({ _id: queryId }, {
+            hotelName: req.body.hotelName,
+            address: req.body.address,
+            email: req.body.email,
+            contact: req.body.contact,
+            bookingDate: formattedDate,
+            ourCost: req.body.ourCost,
+            stepFirst: 2,
+            prf: req.body.prf,
+            status: 0,
+        }).then((result) => {
             console.log(result);
             return res.status(200).json({ message: "Query Saved Successfully", result: result });
         }).catch((error) => {
@@ -164,6 +242,7 @@ exports.HotelQueryDup = HotelQueryDup;
 const FlightQueryConfirmed = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const queryId = req.params.id;
+        const imageUrl = req.file.path; // URL of the uploaded image
         yield query_model_1.QueryModel.findOneAndUpdate({ _id: queryId }, {
             passengerName: req.body.passengerName,
             gender: req.body.gender,
@@ -172,6 +251,7 @@ const FlightQueryConfirmed = (req, res) => __awaiter(void 0, void 0, void 0, fun
             class: req.body.class,
             meal: req.body.meal,
             invoiceNumber: req.body.invoiceNumber,
+            hotelImage: imageUrl,
             vendorName: req.body.vendorName,
             confirmed: req.body.confirmedQuery,
             status: 1,
@@ -201,6 +281,10 @@ const CabQueryConfirmed = (req, res) => __awaiter(void 0, void 0, void 0, functi
             cabName: req.body.cabName,
             invoiceNumber: req.body.invoiceNumber,
             vendorName: req.body.vendorName,
+            cabTotalExtraHour: req.body.cabTotalExtraHour,
+            cabTotalextraKms: req.body.cabTotalextraKms,
+            cabTotalkms: req.body.cabTotalkms,
+            cabGrosstotal: req.body.cabGrosstotal,
             confirmed: req.body.confirmedQuery,
             status: 1,
         })
@@ -236,7 +320,7 @@ const HotelQueryConfirmed = (req, res) => __awaiter(void 0, void 0, void 0, func
 exports.HotelQueryConfirmed = HotelQueryConfirmed;
 const getFlightQueries = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const queries = yield query_model_1.QueryModel.find({ serviceType: "Flight" });
+        const queries = yield query_model_1.QueryModel.find({ serviceType: "Flight" }).sort({ timestamp: -1 });
         return res.status(200).json({ message: "Queries fetched successfully", result: queries });
     }
     catch (error) {
@@ -246,7 +330,7 @@ const getFlightQueries = (req, res) => __awaiter(void 0, void 0, void 0, functio
 exports.getFlightQueries = getFlightQueries;
 const getCabQueries = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const queries = yield query_model_1.QueryModel.find({ serviceType: "Cab" });
+        const queries = yield query_model_1.QueryModel.find({ serviceType: "Cab" }).sort({ timestamp: -1 });
         return res.status(200).json({ message: "Queries fetched successfully", result: queries });
     }
     catch (error) {
@@ -256,7 +340,7 @@ const getCabQueries = (req, res) => __awaiter(void 0, void 0, void 0, function* 
 exports.getCabQueries = getCabQueries;
 const getHotelQueries = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const queries = yield query_model_1.QueryModel.find({ serviceType: "Hotel" });
+        const queries = yield query_model_1.QueryModel.find({ serviceType: "Hotel" }).sort({ timestamp: -1 });
         return res.status(200).json({ message: "Queries fetched successfully", result: queries });
     }
     catch (error) {
@@ -266,7 +350,7 @@ const getHotelQueries = (req, res) => __awaiter(void 0, void 0, void 0, function
 exports.getHotelQueries = getHotelQueries;
 const getAllQueries = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const queries = yield query_model_1.QueryModel.find();
+        const queries = yield query_model_1.QueryModel.find().sort({ timestamp: -1 });
         return res.status(200).json({ message: "Queries fetched successfully", result: queries });
     }
     catch (error) {
