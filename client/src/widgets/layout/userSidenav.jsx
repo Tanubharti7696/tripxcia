@@ -11,10 +11,13 @@ import { useMaterialTailwindController, setOpenSidenav } from "@/context";
 import logo from '../../assets/logo/logo.png'
 import React from "react";
 import { ArrowDown, ArrowRight, ChevronDown, ChevronRight } from "lucide-react";
-export function Sidenav({ brandImg, brandName, routes }) {
+
+export function UserSidenav({ brandImg, brandName, routes }) {
   const [controller, dispatch] = useMaterialTailwindController();
   const [currentTab, setcurrentTab] = React.useState('')
-  const { sidenavColor, sidenavType, openSidenav } = controller;
+  const { userSidenavColor, sidenavType, openSidenav } = controller;
+
+
   const sidenavTypes = {
     dark: "bg-gradient-to-br from-gray-800 to-gray-900",
     white: "bg-white shadow-sm",
@@ -82,10 +85,11 @@ export function Sidenav({ brandImg, brandName, routes }) {
                       variant={currentTab === name ? "gradient" : "text"}
                       color={
                         currentTab === name
-                          ? sidenavColor
+                          ? userSidenavColor
                           : sidenavType === "dark"
                             ? "white"
                             : "blue-gray"
+
                       }
                       className="flex items-center gap-4 px-4 capitalize"
                       fullWidth
@@ -120,7 +124,7 @@ export function Sidenav({ brandImg, brandName, routes }) {
                               variant={isActive ? "gradient" : "text"}
                               color={
                                 isActive
-                                  ? sidenavColor
+                                  ? userSidenavColor
                                   : sidenavType === "dark"
                                     ? "white"
                                     : "blue-gray"
@@ -151,7 +155,7 @@ export function Sidenav({ brandImg, brandName, routes }) {
                         variant={isActive ? "gradient" : "text"}
                         color={
                           isActive
-                            ? sidenavColor
+                            ? userSidenavColor
                             : sidenavType === "dark"
                               ? "white"
                               : "blue-gray"
@@ -180,17 +184,17 @@ export function Sidenav({ brandImg, brandName, routes }) {
   );
 }
 
-Sidenav.defaultProps = {
+UserSidenav.defaultProps = {
   brandImg: "/img/logo-ct.png",
   brandName: "Material Tailwind React",
 };
 
-Sidenav.propTypes = {
+UserSidenav.propTypes = {
   brandImg: PropTypes.string,
   brandName: PropTypes.string,
   routes: PropTypes.arrayOf(PropTypes.object).isRequired,
 };
 
-Sidenav.displayName = "/src/widgets/layout/sidnave.jsx";
+UserSidenav.displayName = "/src/widgets/layout/sidnave.jsx";
 
-export default Sidenav;
+export default UserSidenav;

@@ -27,6 +27,9 @@ import Sales from "./pages/dashboard/Sales";
 import path from "path";
 import GenarateQueryConfirm from "./pages/dashboard/Query/GenarateAfterConfirm";
 import EditQuery from "./pages/dashboard/Query/EditQuery";
+import UserGenarateQuery from "./pages/dashboard/Query/GenarateQuery/userGenerateQuery";
+import UserQueryList from "./pages/dashboard/Query/QueryList/userQueryList.jsx";
+import UserHome from "./pages/dashboard/userHome";
 
 const icon = {
   className: "w-5 h-5 text-inherit",
@@ -34,7 +37,7 @@ const icon = {
 
 export const routes = [
   {
-  
+
     layout: "dashboard",
     pages: [
       {
@@ -46,8 +49,8 @@ export const routes = [
       {
         icon: <User {...icon} />,
         name: "Clients",
-        hasDropdown:true,
-        dropdown:[
+        hasDropdown: true,
+        dropdown: [
           {
             icon: <UserPlus2 {...icon} />,
             name: "Add Client",
@@ -66,32 +69,32 @@ export const routes = [
       {
         icon: <Store {...icon} />,
         name: "Vendors",
-        hasDropdown:true,
-        dropdown:[
-           
-      {
-        icon: <Store {...icon} />,
-        name: "add-vendor",
-        path: "/add-vendor",
-        element: <AddVendor />,
-      },
-      {
-        icon: <ShoppingBag {...icon} />,
-        name: "vendors",
-        path: "/vendors",
-        element: <VendorList />,
-      },
-      
+        hasDropdown: true,
+        dropdown: [
+
+          {
+            icon: <Store {...icon} />,
+            name: "add-vendor",
+            path: "/add-vendor",
+            element: <AddVendor />,
+          },
+          {
+            icon: <ShoppingBag {...icon} />,
+            name: "vendors",
+            path: "/vendors",
+            element: <VendorList />,
+          },
+
         ]
 
 
       },
-     
+
       {
         icon: <Settings {...icon} />,
         name: "Manage Query",
-        hasDropdown:true,
-        dropdown:[
+        hasDropdown: true,
+        dropdown: [
           {
             icon: <Settings {...icon} />,
             name: "genarate-query",
@@ -106,12 +109,12 @@ export const routes = [
           },
         ]
       },
-      
+
       {
         icon: <Quote {...icon} />,
         name: "Manage Quotation",
-        hasDropdown:true,
-        dropdown:[
+        hasDropdown: true,
+        dropdown: [
           {
             icon: <Plane {...icon} />,
             name: "quota-flight",
@@ -124,7 +127,7 @@ export const routes = [
             path: "/quota-cab",
             element: <CabQuota />,
           },
-         
+
           {
             icon: <Hotel {...icon} />,
             name: "quota-hotel",
@@ -139,16 +142,16 @@ export const routes = [
         name: "query-confirm",
         path: "/query-confirm/:id",
         element: <GenarateQueryConfirm />,
-        hidden:true
+        hidden: true
       },
       {
         icon: <Quote {...icon} />,
         name: "query-edit",
         path: "/query-edit/:id",
         element: <EditQuery />,
-        hidden:true
+        hidden: true
       },
- 
+
       {
         icon: <CheckCircle {...icon} />,
         name: "confirmed booking",
@@ -179,11 +182,105 @@ export const routes = [
         path: "/sales",
         element: <Sales />,
       },
-     
-     
-     
+
+
+
     ],
-    
+
+  }
+  ,
+
+];
+
+export const userroutes = [
+  {
+
+    layout: "userDashboard",
+    pages: [
+      {
+        icon: <HomeIcon {...icon} />,
+        name: "dashboard",
+        path: "/home",
+        element: <UserHome />,
+      },
+      {
+        icon: <Settings {...icon} />,
+        name: "Manage Query",
+        hasDropdown: true,
+        dropdown: [
+          {
+            icon: <Settings {...icon} />,
+            name: "genarate-query",
+            path: "/genarate-query",
+            element: <UserGenarateQuery />,
+          },
+          {
+            icon: <Settings2 {...icon} />,
+            name: "query-list",
+            path: "/query-list",
+            element: <UserQueryList />,
+          },
+        ]
+      },
+
+      // {
+      //   icon: <Quote {...icon} />,
+      //   name: "Manage Quotation",
+      //   hasDropdown: true,
+      //   dropdown: [
+      //     {
+      //       icon: <Plane {...icon} />,
+      //       name: "quota-flight",
+      //       path: "/quota-flight",
+      //       element: <FlightQuota />,
+      //     },
+      //     {
+      //       icon: <CarTaxiFront {...icon} />,
+      //       name: "quota-cab",
+      //       path: "/quota-cab",
+      //       element: <CabQuota />,
+      //     },
+
+      //     {
+      //       icon: <Hotel {...icon} />,
+      //       name: "quota-hotel",
+      //       path: "/quota-hotel",
+      //       element: <HotelQuota />,
+      //     },
+      //   ]
+
+      // },
+      // {
+      //   icon: <Quote {...icon} />,
+      //   name: "query-confirm",
+      //   path: "/query-confirm/:id",
+      //   element: <GenarateQueryConfirm />,
+      //   hidden: true
+      // },
+      // {
+      //   icon: <CheckCircle {...icon} />,
+      //   name: "confirmed booking",
+      //   path: "/confirmed-booking",
+      //   element: <ConfirmedBooking />,
+      // },
+      // {
+      //   icon: <Wallet {...icon} />,
+      //   name: "payments",
+      //   path: "/payments",
+      //   element: <Payments />,
+      // },
+      // {
+      //   icon: <ReceiptText {...icon} />,
+      //   name: "billings",
+      //   path: "/billings",
+      //   element: <Billings />,
+      // },
+
+
+
+
+    ],
+
   }
   ,
 

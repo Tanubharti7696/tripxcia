@@ -21,7 +21,8 @@ import { Link, useNavigate, useRoutes } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import makeRequest from '@/data/api';
 import { getAllQueries } from '@/data/apis';
-export default function QueryList() {
+
+export default function UserQueryList() {
   const [selectedRow, setSelectedRow] = useState(null);
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
@@ -76,8 +77,8 @@ export default function QueryList() {
         console.log(selectedRow)
       }} />
       <Card>
-        <CardHeader variant="gradient" color="gray" className="mb-8 p-6">
-          <Typography variant="h6" color="white">
+        <CardHeader variant="gradient" style={{ backgroundColor: "#1F50A2" }} className="mb-8 p-6">
+          <Typography variant="h6" color="white" >
             Query List
           </Typography>
         </CardHeader>
@@ -85,7 +86,7 @@ export default function QueryList() {
           <table className="w-full min-w-[640px] table-auto">
             <thead>
               <tr>
-                {["SL", "ID", "Client Name", "Staff", "Service", "Action"].map((el) => (
+                {["SL", "ID", "Client Name", "Date"].map((el) => (
                   <th
                     key={el}
                     className="border-b border-blue-gray-50 py-3 px-5 text-left"
@@ -105,8 +106,8 @@ export default function QueryList() {
                 .filter(a => a.stepFirst === 1)
                 .map((row, index) => {
                   const className = `py-3 px-5 ${index === queries.length - 1
-                      ? ""
-                      : "border-b border-blue-gray-50"
+                    ? ""
+                    : "border-b border-blue-gray-50"
                     }`;
                   const type = row.serviceType;
 
@@ -135,20 +136,20 @@ export default function QueryList() {
 
                       </td>
                       <td className={className}>
-
+                        18-sep-24
                       </td>
-                      <td className={className}>
+                      {/* <td className={className}>
                         <Typography className="text-xs font-semibold text-blue-gray-600">
                           {row.serviceType}
                         </Typography>
-                      </td>
+                      </td> */}
 
 
-                      <td className={className}>
+                      {/* <td className={className}>
                         <Edit onClick={() => {
                           navigate(`/dashboard/query-edit/${row._id}`)
                         }} className='cursor-pointer hover:scale-105 transition-all' />
-                      </td>
+                      </td> */}
                     </tr>
                   );
                 }

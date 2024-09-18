@@ -5,12 +5,14 @@ import Invoice from "./pages/dashboard/Invoice";
 import { SignIn } from "./pages/auth";
 import HotelBill from "./pages/dashboard/HotelBill";
 import EditQuery from "./pages/dashboard/Query/EditQuery";
+import UserDashboard from "./layouts/userDashboard";
 
 function App() {
   return (
     <Routes>
       <Route path="/dashboard/*" element={<Dashboard />} />
-      <Route path="/ticket/:id" element={<Ticket/>} />
+      <Route path="/userDashboard/*" element={<UserDashboard />} />
+      <Route path="/ticket/:id" element={<Ticket />} />
       <Route path="/invoice/:id" element={<Invoice />} />
       <Route path='/hotel/bill/:id' element={<HotelBill />} />
       <Route path="/auth/signin" element={<SignIn />} />

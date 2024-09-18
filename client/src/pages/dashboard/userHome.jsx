@@ -26,13 +26,14 @@ import {
   ordersOverviewData,
 } from "@/data";
 import { CheckCircleIcon, ClockIcon } from "@heroicons/react/24/solid";
+import UserStatisticsCard from "@/widgets/cards/userStatistics-card";
 
-export function Home() {
+export function UserHome() {
   return (
     <div className="mt-12">
       <div className="mb-12 grid gap-y-10 gap-x-6 md:grid-cols-2 xl:grid-cols-4">
         {statisticsCardsData.map(({ icon, title, footer, ...rest }) => (
-          <StatisticsCard
+          <UserStatisticsCard
             key={title}
             {...rest}
             title={title}
@@ -54,4 +55,4 @@ export function Home() {
   );
 }
 
-export default Home;
+export default UserHome;
