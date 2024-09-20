@@ -30,6 +30,11 @@ import EditQuery from "./pages/dashboard/Query/EditQuery";
 import UserGenarateQuery from "./pages/dashboard/Query/GenarateQuery/userGenerateQuery";
 import UserQueryList from "./pages/dashboard/Query/QueryList/userQueryList.jsx";
 import UserHome from "./pages/dashboard/userHome";
+import UserCabQuota from "./pages/dashboard/Quota/CabQuota/userCabQuota";
+import UserQuota from "./pages/dashboard/Quota/userQuota";
+import UserConfirmedBooking from "./pages/dashboard/ConfirmedBooking/userConfirmedBooking";
+import UserPayments from "./pages/dashboard/Payment/userPayment";
+import UserBillings from "./pages/dashboard/Billings/userBillings";
 
 const icon = {
   className: "w-5 h-5 text-inherit",
@@ -223,33 +228,35 @@ export const userroutes = [
         ]
       },
 
-      // {
-      //   icon: <Quote {...icon} />,
-      //   name: "Manage Quotation",
-      //   hasDropdown: true,
-      //   dropdown: [
-      //     {
-      //       icon: <Plane {...icon} />,
-      //       name: "quota-flight",
-      //       path: "/quota-flight",
-      //       element: <FlightQuota />,
-      //     },
-      //     {
-      //       icon: <CarTaxiFront {...icon} />,
-      //       name: "quota-cab",
-      //       path: "/quota-cab",
-      //       element: <CabQuota />,
-      //     },
+      {
+        icon: <Quote {...icon} />,
+        name: "Manage Quotation",
+        path: "/user-quota",
+        element: <UserQuota />,
+        // hasDropdown: true,
+        // dropdown: [
+        //   {
+        //     icon: <Plane {...icon} />,
+        //     name: "quota-flight",
+        //     path: "/quota-flight",
+        //     element: <FlightQuota />,
+        //   },
+        //   {
+        //     icon: <CarTaxiFront {...icon} />,
+        //     name: "quota-cab",
+        //     path: "/quota-cab",
+        //     element: <UserCabQuota />,
+        //   },
 
-      //     {
-      //       icon: <Hotel {...icon} />,
-      //       name: "quota-hotel",
-      //       path: "/quota-hotel",
-      //       element: <HotelQuota />,
-      //     },
-      //   ]
+        //   {
+        //     icon: <Hotel {...icon} />,
+        //     name: "quota-hotel",
+        //     path: "/quota-hotel",
+        //     element: <HotelQuota />,
+        //   },
+        // ]
 
-      // },
+      },
       // {
       //   icon: <Quote {...icon} />,
       //   name: "query-confirm",
@@ -257,23 +264,23 @@ export const userroutes = [
       //   element: <GenarateQueryConfirm />,
       //   hidden: true
       // },
-      // {
-      //   icon: <CheckCircle {...icon} />,
-      //   name: "confirmed booking",
-      //   path: "/confirmed-booking",
-      //   element: <ConfirmedBooking />,
-      // },
-      // {
-      //   icon: <Wallet {...icon} />,
-      //   name: "payments",
-      //   path: "/payments",
-      //   element: <Payments />,
-      // },
+      {
+        icon: <CheckCircle {...icon} />,
+        name: "confirmed booking",
+        path: "/confirmed-booking",
+        element: <UserConfirmedBooking />,
+      },
+      {
+        icon: <ReceiptText {...icon} />,
+        name: "billings",
+        path: "/billings",
+        element: <UserPayments />,
+      },
       // {
       //   icon: <ReceiptText {...icon} />,
       //   name: "billings",
       //   path: "/billings",
-      //   element: <Billings />,
+      //   element: <UserBillings />,
       // },
 
 
